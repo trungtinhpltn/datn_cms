@@ -214,7 +214,7 @@ const ManagermentShift = () => {
           {listHisShift?.length > 0 ? (
             listHisShift?.map((item) => (
               <HisShift
-                key={`ls-em-${item?.id}`}
+                key={`ls-em-${item?.employeeId}`}
                 item={item}
                 callback={() => getData()}
               />

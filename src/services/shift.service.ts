@@ -12,6 +12,11 @@ export async function createShiftByUserId(data: any): Promise<any> {
   return response.data.data
 }
 
+export async function createHisShift(data: any): Promise<any> {
+  const response = await axiosClient.post(`/shift/createHisShift`, data)
+  return response.data.data
+}
+
 export async function getHisShiftByRestaurant(data: any): Promise<any> {
   const query = qs.stringify(data)
   const response = await axiosClient.get(

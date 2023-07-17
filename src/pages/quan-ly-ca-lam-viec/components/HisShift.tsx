@@ -1,12 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Button from 'components/Button'
+import type { IHisShift } from 'models/shift'
 import React, { useEffect, useState } from 'react'
-import { updateHisShift } from 'services/shift.service'
+import { createHisShift, updateHisShift } from 'services/shift.service'
 import { toastError, toastSuccess } from 'utils/toast'
 
 import { SHIFT_TIME } from '../ca-nhan'
 
-const HisShift = ({ item, callback }: { item: any; callback: () => void }) => {
+const HisShift = ({
+  item,
+  callback
+}: {
+  item: IHisShift
+  callback: () => void
+}) => {
   const [showEdit, setShowEdit] = useState(false)
   const [edit, setEdit] = useState(false)
   const [itemShow, setItemShow] = useState<any>()
@@ -34,17 +41,37 @@ const HisShift = ({ item, callback }: { item: any; callback: () => void }) => {
 
   const handleSave = async () => {
     try {
-      await updateHisShift(itemShow?.id, {
-        monday: itemShow?.monday || [],
-        tuesday: itemShow?.tuesday || [],
-        wednesday: itemShow?.wednesday || [],
-        thursday: itemShow?.thursday || [],
-        friday: itemShow?.friday || [],
-        saturday: itemShow?.saturday || [],
-        sunday: itemShow?.sunday || [],
-        updatedAt: new Date().toISOString(),
-        msg: 'Lịch làm việc đã được cập nhật bởi quản lý.'
-      })
+      if (!item?.exits) {
+        await createHisShift({
+          employeeId: item?.employeeId,
+          restaurantId: item?.restaurantId,
+          startDate: item?.startDate,
+          endDate: item?.endDate,
+          year: item?.year,
+          monday: itemShow?.monday || [],
+          tuesday: itemShow?.tuesday || [],
+          wednesday: itemShow?.wednesday || [],
+          thursday: itemShow?.thursday || [],
+          friday: itemShow?.friday || [],
+          saturday: itemShow?.saturday || [],
+          sunday: itemShow?.sunday || [],
+          updatedAt: new Date().toISOString(),
+          msg: 'Lịch làm việc đã được cập nhật bởi quản lý.'
+        })
+      } else {
+        await updateHisShift(itemShow?.id, {
+          monday: itemShow?.monday || [],
+          tuesday: itemShow?.tuesday || [],
+          wednesday: itemShow?.wednesday || [],
+          thursday: itemShow?.thursday || [],
+          friday: itemShow?.friday || [],
+          saturday: itemShow?.saturday || [],
+          sunday: itemShow?.sunday || [],
+          updatedAt: new Date().toISOString(),
+          msg: 'Lịch làm việc đã được cập nhật bởi quản lý.'
+        })
+      }
+
       callback && callback()
       toastSuccess('Thay đổi thành công.')
     } catch (error: any) {

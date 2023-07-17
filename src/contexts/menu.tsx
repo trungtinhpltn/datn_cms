@@ -104,6 +104,7 @@ export const menuInit: Array<IMenuItem> = [
     name: 'Quản lý ca làm việc',
     iconName: 'Home',
     role: ['ADMIN', 'MANAGER'],
+    url: '/quan-ly-ca-lam-viec',
     children: [
       {
         id: 'manager-job-time-res',

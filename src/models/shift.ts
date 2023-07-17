@@ -1,8 +1,8 @@
 export interface IHisShift {
-  id?: number
+  id?: number | null
   employeeId?: number
   restaurantId?: number
-  startDate?: string
+  startDate: string
   endDate: string
   year: number
   monday: number[]
@@ -14,6 +14,7 @@ export interface IHisShift {
   sunday: number[]
   msg?: string
   updatedAt?: string
+  exits?: boolean
   Employee: {
     name: string
   }
