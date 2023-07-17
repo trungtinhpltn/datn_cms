@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
+import type { IListViewQuery } from 'components/ListView'
 import Select from 'components/Select'
 import { Month } from 'contants'
 import { useGlobalContext } from 'contexts/global'
+import useQueryParam from 'hooks/useQueryParams'
 import type { IHisShift } from 'models/shift'
 import React, { useCallback, useEffect, useState } from 'react'
 import { getHisShiftByRestaurant } from 'services/shift.service'
@@ -17,6 +19,7 @@ const ManagermentShift = () => {
   const [monthSelect, setMonthSelect] = useState(new Date().getMonth() + 1)
   const [daySelect, setDaySelect] = useState<any>('')
   const [dayFilter, setDayFilter] = useState<any[]>([])
+  const [queryParams, setQueryParams] = useQueryParam<IListViewQuery>()
 
   const getData = useCallback(async () => {
     if (!restaurantSelect?.id) return
@@ -37,9 +40,20 @@ const ManagermentShift = () => {
       toastError(error.message)
     }
   }, [restaurantSelect?.id, daySelect])
+
   useEffect(() => {
     getData()
   }, [getData])
+
+  useEffect(() => {
+    if (queryParams && queryParams.restaurant_id) return
+    if (restaurantSelect?.id) {
+      setQueryParams((queryParams) => ({
+        ...queryParams,
+        restaurant_id: restaurantSelect?.id
+      }))
+    }
+  }, [restaurantSelect, setQueryParams, queryParams])
 
   const optionsByWeekFunc = useCallback(() => {
     const options: any[] = []

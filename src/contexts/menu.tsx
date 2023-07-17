@@ -21,13 +21,15 @@ export const menuInit: Array<IMenuItem> = [
     name: 'Trang chủ',
     url: '/',
     iconName: 'Zap',
-    children: []
+    children: [],
+    role: ['ADMIN', 'MANAGER']
   },
   {
     id: 'manager-restaurant',
     name: 'Quản lý nhà hàng',
     url: '/quan-ly-nha-hang',
     iconName: 'Home',
+    role: ['ADMIN'],
     children: []
   },
   {
@@ -35,20 +37,23 @@ export const menuInit: Array<IMenuItem> = [
     name: 'Quản lý bàn ăn',
     url: '/quan-ly-ban-an',
     iconName: 'Home',
-    children: []
+    children: [],
+    role: ['ADMIN', 'MANAGER']
   },
   {
     id: 'manager-order',
     name: 'Quản lý đặt bàn',
     url: '/quan-ly-dat-ban',
     iconName: 'Home',
-    children: []
+    children: [],
+    role: ['ADMIN', 'MANAGER']
   },
   {
     id: 'manager-menu',
     name: 'Quản lý thực đơn',
     url: '/quan-ly-thuc-don',
     iconName: 'Home',
+    role: ['ADMIN', 'MANAGER'],
     children: [
       {
         id: 'manager-menu-list',
@@ -56,21 +61,24 @@ export const menuInit: Array<IMenuItem> = [
         url: '/quan-ly-thuc-don',
         iconName: 'CircleDot',
         children: [],
-        childrenLink: ['/quan-ly-thuc-don/create']
+        childrenLink: ['/quan-ly-thuc-don/create'],
+        role: ['ADMIN', 'MANAGER']
       },
       {
         id: 'manager-menu-category',
         name: 'Phân loại đồ',
         url: '/quan-ly-thuc-don/category',
         iconName: 'CircleDot',
-        children: []
+        children: [],
+        role: ['ADMIN', 'MANAGER']
       },
       {
         id: 'manager-menu-unit',
         name: 'Phân loại đợn vị tính',
         url: '/quan-ly-thuc-don/unit',
         iconName: 'CircleDot',
-        children: []
+        children: [],
+        role: ['ADMIN', 'MANAGER']
       }
     ]
   },
@@ -80,36 +88,54 @@ export const menuInit: Array<IMenuItem> = [
     name: 'Quản lý hóa đơn',
     url: '/quan-ly-hoa-don',
     iconName: 'Home',
-    children: []
+    children: [],
+    role: ['ADMIN', 'MANAGER']
   },
   {
     id: 'manager-staff',
     name: 'Quản lý nhân viên',
     url: '/quan-ly-nhan-vien',
     iconName: 'Home',
-    children: []
+    children: [],
+    role: ['ADMIN', 'MANAGER']
   },
   {
     id: 'manager-job-time',
     name: 'Quản lý ca làm việc',
-    url: '/quan-ly-ca-lam-viec',
     iconName: 'Home',
+    role: ['ADMIN', 'MANAGER'],
     children: [
       {
         id: 'manager-job-time-res',
         name: 'Nhà hàng',
         url: '/quan-ly-ca-lam-viec',
         iconName: 'CircleDot',
-        children: []
+        children: [],
+        role: ['ADMIN', 'MANAGER']
       },
       {
         id: 'manager-job-time-pre',
         name: 'Cá nhân',
         url: '/quan-ly-ca-lam-viec/ca-nhan',
         iconName: 'CircleDot',
-        children: []
+        children: [],
+        role: ['MANAGER']
       }
     ]
+  },
+  {
+    id: 'user-info',
+    name: 'Thông tin cá nhân',
+    url: '/thong-tin-ca-nhan',
+    iconName: 'Home',
+    role: ['MANAGER', 'EMPLOYEE']
+  },
+  {
+    id: 'user-shift',
+    name: 'Ca làm việc',
+    url: '/ca-lam-viec',
+    iconName: 'Home',
+    role: ['EMPLOYEE']
   }
 ]
 

@@ -11,6 +11,7 @@ import TabPane from './TabPane'
 import TopBar from './TopBar'
 
 export type ILayoutProps = React.PropsWithChildren
+const pathEmp = [`/ca-lam-viec`, `/thong-tin-ca-nhan`, '/doi-mat-khau']
 
 export default function Layout(props: ILayoutProps) {
   // const { children } = props
@@ -44,6 +45,15 @@ export default function Layout(props: ILayoutProps) {
   // if (!isAuthenticated && typeof isAuthenticated === 'undefined') {
   //   return <LoadingScreen show={isLoading} />
   // }
+  if (
+    user &&
+    user.role === 'EMPLOYEE' &&
+    !pathEmp.includes(location.pathname)
+  ) {
+    return (
+      <Navigate to={'/thong-tin-ca-nhan'} state={{ from: location }} replace />
+    )
+  }
 
   return (
     <>

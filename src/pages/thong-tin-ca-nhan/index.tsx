@@ -5,12 +5,12 @@ import InputImage from 'components/Input/InputImage'
 import type { TOption } from 'components/Input/InputSelect'
 import InputSelect from 'components/Input/InputSelect'
 import { validateRequired } from 'contants/validate'
+import { useAuth } from 'contexts/auth'
 import { type CreateEmployeeDto, positionOptions } from 'models/employee'
 import type { IProvince } from 'models/province'
 import { useUpdateEmployee } from 'mutation/employee.mutation'
 import { Controller } from 'react-hook-form'
 import { useQuery } from 'react-query'
-import { useParams } from 'react-router'
 import { getEmployeeById } from 'services/employee.service'
 import { provinceAPI } from 'services/province.service'
 import * as yup from 'yup'
@@ -36,12 +36,12 @@ const makeDefaultData = (data: any) => {
   return data
 }
 
-const MangermentStaffEdit = () => {
-  const { id } = useParams()
+const UserInfo = () => {
+  const { user, getUser } = useAuth()
   const { data, isLoading } = useQuery({
-    queryKey: ['employee', id],
-    queryFn: () => getEmployeeById(parseInt(id || '0')),
-    enabled: !!id
+    queryKey: ['employee', user?.Employee?.id],
+    queryFn: () => getEmployeeById(parseInt(user?.Employee?.id + '')),
+    enabled: !!user?.Employee?.id
   })
 
   const updateEmplyeeMutation = useUpdateEmployee()
@@ -52,7 +52,7 @@ const MangermentStaffEdit = () => {
 
   return (
     <EditView<CreateEmployeeDto>
-      saveLabel="Lưu"
+      saveLabel="Cập nhật"
       showBackButton={true}
       defaultMode={'edit'}
       initialValues={makeDefaultData(data)}
@@ -60,7 +60,7 @@ const MangermentStaffEdit = () => {
         name: validateRequired(),
         email: validateRequired()
       })}
-      title="Sửa nhân viên"
+      title="Thông tin cá nhân"
       isCreate={true}
       onSubmit={async ({ data }) => {
         const cleanData: any = {
@@ -80,18 +80,19 @@ const MangermentStaffEdit = () => {
             : undefined,
           wawe: data.wawe ? +data.wawe : 0,
           trialTime: data.trialTime ? +data.trialTime : 0
+          // image: string
         }
-
         await updateEmplyeeMutation.mutateAsync({
-          id: parseInt(id || '0'),
+          id: parseInt(user?.Employee?.id + ''),
           data: cleanData
         })
+        await getUser()
       }}
       changeMode={false}
       renderView={({
         form: {
           register,
-          formState: { defaultValues, errors },
+          formState: { errors },
           watch,
           control
         },
@@ -102,7 +103,6 @@ const MangermentStaffEdit = () => {
             <div className="intro-y box col-span-12 lg:col-span-6">
               <div className="p-5">
                 <h2 className="mt-8 font-medium">TÀI KHOẢN</h2>
-
                 <InputForm
                   {...register('name')}
                   title={'Tên nhân viên'}
@@ -271,26 +271,6 @@ const MangermentStaffEdit = () => {
                   )}
                 />
                 <InputSelect
-                  name={`active`}
-                  loadOptions={async (): Promise<TOption[]> => {
-                    return [
-                      {
-                        label: 'Hoạt động',
-                        value: '1'
-                      },
-                      {
-                        label: 'Không hoạt động',
-                        value: '0'
-                      }
-                    ]
-                  }}
-                  title={'Trạng thái'}
-                  placeholder={'Trạng thái'}
-                  error={errors?.active?.message}
-                  wrapperClassname="mt-2"
-                  isMulti={false}
-                />
-                <InputSelect
                   name={`position`}
                   loadOptions={async (): Promise<TOption[]> => {
                     return positionOptions
@@ -300,6 +280,7 @@ const MangermentStaffEdit = () => {
                   error={errors?.position?.message}
                   wrapperClassname="mt-2"
                   isMulti={false}
+                  isDisabled
                 />
                 <h2 className="mt-8 font-medium">THÔNG TIN HỢP ĐỒNG</h2>
                 <InputSelect
@@ -321,6 +302,7 @@ const MangermentStaffEdit = () => {
                   error={errors?.position?.message}
                   wrapperClassname="mt-2"
                   isMulti={false}
+                  isDisabled
                 />
                 <InputForm
                   {...register('dateContract')}
@@ -328,7 +310,7 @@ const MangermentStaffEdit = () => {
                   type="date"
                   error={errors?.dateContract?.message}
                   wrapperClassname="mt-2"
-                  readOnly={mode === 'readonly'}
+                  readOnly
                 />
                 <InputForm
                   {...register('trialTime')}
@@ -337,7 +319,7 @@ const MangermentStaffEdit = () => {
                   type="text"
                   error={errors?.trialTime?.message}
                   wrapperClassname="mt-2"
-                  readOnly={mode === 'readonly'}
+                  readOnly
                 />{' '}
                 <InputForm
                   {...register('wawe')}
@@ -346,7 +328,7 @@ const MangermentStaffEdit = () => {
                   type="text"
                   error={errors?.wawe?.message}
                   wrapperClassname="mt-2"
-                  readOnly={mode === 'readonly'}
+                  readOnly
                 />
               </div>
             </div>
@@ -357,4 +339,4 @@ const MangermentStaffEdit = () => {
   )
 }
 
-export default MangermentStaffEdit
+export default UserInfo

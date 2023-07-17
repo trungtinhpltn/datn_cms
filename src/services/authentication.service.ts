@@ -1,5 +1,4 @@
 import type { SignInParams } from 'contants/auth'
-import type * as modelsResponse from 'models/response'
 
 import axiosClient from './axiosClient'
 
@@ -13,11 +12,12 @@ const authenticationAPI = {
   getCurrentUser() {
     return axiosClient.get<any>('/users/me')
   },
-  forgetPassword(email: string) {
-    return axiosClient.post<modelsResponse.IForgetPasswordResponseData>(
-      '/users/forgetPassword',
-      { email }
+  async changePassword(id: number, data: any) {
+    const response = await axiosClient.post<any>(
+      `/users/changePassword/${id}`,
+      data
     )
+    return response.data
   }
 }
 

@@ -17,9 +17,11 @@ export interface IUser {
   active?: boolean
   name?: string
   hashedRt?: string
+  role?: string
   Employee?: {
     image: string
     position: string
     id: number
+    restaurantId: number
   }
 }

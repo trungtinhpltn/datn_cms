@@ -7,6 +7,8 @@ import { useAuth } from 'contexts/auth'
 import { useGlobalContext } from 'contexts/global'
 import { usePopup } from 'contexts/popup'
 import type { IHisShift } from 'models/shift'
+import { SHIFT_TIME } from 'pages/quan-ly-ca-lam-viec/ca-nhan'
+import HisShiftEmployee from 'pages/quan-ly-ca-lam-viec/components/HisShiftEmployee'
 import { useCallback, useEffect, useState } from 'react'
 import { useMutation } from 'react-query'
 import {
@@ -17,17 +19,7 @@ import {
 import { formatDate } from 'utils'
 import { toastError, toastSuccess } from 'utils/toast'
 
-import HisShiftEmployee from './components/HisShiftEmployee'
-export const SHIFT_TIME = [
-  { id: 1, name: 'Thứ hai', key: 'monday' },
-  { id: 2, name: 'Thứ ba', key: 'tuesday' },
-  { id: 3, name: 'Thứ tư', key: 'wednesday' },
-  { id: 4, name: 'Thứ năm', key: 'thursday' },
-  { id: 5, name: 'Thứ sáu', key: 'friday' },
-  { id: 6, name: 'Thứ bảy', key: 'saturday' },
-  { id: 7, name: 'Chủ nhật', key: 'sunday' }
-]
-const PersonalJobTime = () => {
+const UserShift = () => {
   const { user } = useAuth()
   const { restaurantSelect } = useGlobalContext()
   const { showPopupConfirm } = usePopup()
@@ -440,4 +432,4 @@ const PersonalJobTime = () => {
   )
 }
 
-export default PersonalJobTime
+export default UserShift

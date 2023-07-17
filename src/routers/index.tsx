@@ -2,6 +2,8 @@ import ErrorPage from 'components/ErrorPage'
 import Layout from 'components/Layout'
 import { menuInit } from 'contexts/menu'
 import Home from 'pages'
+import UserShift from 'pages/ca-lam-viec'
+import ChangePassword from 'pages/doi-mat-khau'
 import LoginPage from 'pages/login'
 import ManagerTableFood from 'pages/quan-ly-ban-an'
 import TableFoodCreate from 'pages/quan-ly-ban-an/create'
@@ -24,6 +26,7 @@ import MenuCategory from 'pages/quan-ly-thuc-don/category'
 import MenuItemCreate from 'pages/quan-ly-thuc-don/create'
 import MenuItemEdit from 'pages/quan-ly-thuc-don/edit'
 import MenuUnit from 'pages/quan-ly-thuc-don/unit'
+import UserInfo from 'pages/thong-tin-ca-nhan'
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -42,6 +45,11 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/login" element={<LoginPage />} handle={{ crumb }} />
+      <Route
+        path="/doi-mat-khau"
+        element={<ChangePassword />}
+        handle={{ crumb }}
+      />
       <Route element={<Layout />}>
         <Route path="/" handle={{ crumb }}>
           <Route index element={<Home />} />
@@ -96,6 +104,12 @@ const router = createBrowserRouter(
             path="/quan-ly-ca-lam-viec/ca-nhan"
             element={<PersonalJobTime />}
           />
+        </Route>
+        <Route path="/thong-tin-ca-nhan" handle={{ crumb }}>
+          <Route index element={<UserInfo />} />
+        </Route>
+        <Route path="/ca-lam-viec" handle={{ crumb }}>
+          <Route index element={<UserShift />} />
         </Route>
       </Route>
       <Route path="*" element={<ErrorPage />} />

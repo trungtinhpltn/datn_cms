@@ -5,7 +5,14 @@ import type { SignInParams } from 'contants/auth'
 import useLocalStorage from 'hooks/useLocalStorage'
 import jwt_decode from 'jwt-decode'
 import type { Dispatch, PropsWithChildren, SetStateAction } from 'react'
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import authenticationAPI from 'services/authentication.service'
 import { toastError, toastSuccess } from 'utils/toast'
 
@@ -18,6 +25,7 @@ interface IAuthContextProps {
   setUser: Dispatch<SetStateAction<IUser | null | undefined>>
   openLoginPopup: () => void
   requireLogin: (cb: () => void) => any
+  getUser: () => void
 }
 
 export const AUTH_CONTEXT_KEYS = {
@@ -44,6 +52,9 @@ const AuthContext = createContext<IAuthContextProps>({
     throw new Error('Function not implemented.')
   },
   requireLogin: function (): void {
+    throw new Error('Function not implemented.')
+  },
+  getUser: () => {
     throw new Error('Function not implemented.')
   }
 })
@@ -86,6 +97,37 @@ export default function AuthProvider({ children }: PropsWithChildren<any>) {
 
   //   return () => clearTimeout(timeout)
   // }, [user?.expiresTime])
+
+  const getUser = useCallback(async () => {
+    if (!userStorageValue || !userStorageValue.token) {
+      setUser(null)
+      setLoading(false)
+      setIsAuthenticated(false)
+      return
+    }
+    try {
+      let dataProfile: any = await authenticationAPI.getCurrentUser()
+      dataProfile = dataProfile?.data?.data
+      if (dataProfile) {
+        setUser({
+          ...dataProfile,
+          token: userStorageValue.token || '',
+          refreshToken: userStorageValue.refreshToken || '',
+          expiredTime: userStorageValue.expiredTime || 0
+        })
+        setIsAuthenticated(true)
+        setLoading(false)
+      } else {
+        setUser(null)
+        setLoading(false)
+        setIsAuthenticated(false)
+      }
+    } catch (err) {
+      setUser(null)
+      setLoading(false)
+      setIsAuthenticated(false)
+    }
+  }, [userStorageValue])
 
   const onInit = async () => {
     setLoading(true)
@@ -181,9 +223,10 @@ export default function AuthProvider({ children }: PropsWithChildren<any>) {
       signOut,
       signIn,
       openLoginPopup,
-      requireLogin
+      requireLogin,
+      getUser
     }),
-    [isAuthenticated, user, isLoading]
+    [isAuthenticated, user, isLoading, getUser]
   )
   return (
     <AuthContext.Provider value={value}>

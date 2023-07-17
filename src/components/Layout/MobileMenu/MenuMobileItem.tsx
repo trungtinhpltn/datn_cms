@@ -1,4 +1,5 @@
 import type { IMenuItem } from 'common/menu.type'
+import { useAuth } from 'contexts/auth'
 import useMenuContext from 'contexts/menu'
 import { ChevronDown } from 'lucide-react'
 import * as React from 'react'
@@ -12,8 +13,13 @@ export default function MenuItem(props: IMenuItemProps) {
   const { item } = props
   const navigate = useNavigate()
   const { activeMenu, setActiveMenu } = useMenuContext()
+  const { user } = useAuth()
   const [open, setOpen] = React.useState(!!item?.options?.open)
   const toggle = () => setOpen(!open)
+
+  const hasPermissionsMenu = (menuItem?: IMenuItem): boolean => {
+    return menuItem?.role?.includes(user?.role) || false
+  }
 
   const onClickMenuItem = () => {
     if (item?.onClick || item?.url) {
@@ -26,6 +32,10 @@ export default function MenuItem(props: IMenuItemProps) {
       }
     }
     return toggle()
+  }
+
+  if (item?.hiddenOnMenu || !hasPermissionsMenu(item)) {
+    return <></>
   }
 
   return (
