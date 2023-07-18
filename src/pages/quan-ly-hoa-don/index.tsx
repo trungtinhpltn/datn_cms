@@ -52,19 +52,6 @@ const MangermentBill = () => {
         apiUrl={getApiUrl(`/bill/getByQuery`)}
         showSearch={false}
         actions={<FilterAction />}
-        buttons={[
-          {
-            id: '1',
-            type: 'button',
-            title: 'Thêm mới',
-            color: 'primary',
-            className: 'shadow-sm mr-2',
-            iconName: 'Plus',
-            onClick: () => {
-              navigate(`/quan-ly-nhan-vien/create`)
-            }
-          }
-        ]}
         columns={[
           {
             title: 'Mã hóa đơn',

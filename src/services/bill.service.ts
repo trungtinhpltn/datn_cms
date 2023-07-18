@@ -1,4 +1,5 @@
 import type { IBill, IBillItem } from 'models/bill'
+import * as qs from 'qs'
 
 import axiosClient from './axiosClient'
 
@@ -9,6 +10,12 @@ export async function createBill(data: IBill): Promise<any> {
 
 export async function getBillById(id: number): Promise<any> {
   const response = await axiosClient.get(`/bill/getById/${id}`)
+  return response.data.data
+}
+
+export async function getReport(data: any): Promise<any> {
+  const query = qs.stringify(data)
+  const response = await axiosClient.get(`/bill/getReport?${query}`)
   return response.data.data
 }
 

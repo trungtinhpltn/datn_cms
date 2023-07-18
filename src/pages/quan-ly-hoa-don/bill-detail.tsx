@@ -197,7 +197,8 @@ const BillDetail = () => {
     if (!bill) return
     updateBillMutation.mutate({
       id: bill?.id,
-      ...inputs
+      ...inputs,
+      exportDate: new Date(new Date().toDateString()).getTime() / 1000
     })
   }
 

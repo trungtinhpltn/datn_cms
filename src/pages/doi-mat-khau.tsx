@@ -4,8 +4,7 @@ import Logo from 'assets/images/logo.svg'
 import InputPassword from 'components/Form/InputPassword'
 import {
   validateConfirmPassword,
-  validateDifferentPassword,
-  validateRequired
+  validateDifferentPassword
 } from 'contants/validate'
 import { useAuth } from 'contexts/auth'
 import { useEffect } from 'react'
@@ -17,13 +16,11 @@ import { toastError, toastSuccess } from 'utils/toast'
 import * as yup from 'yup'
 
 export type ChangePasswordInputs = {
-  oldpassword: string
   newpassword: string
   confirmnewpassword: string
 }
 
 const schema = yup.object({
-  oldpassword: validateRequired(' mật khẩu cũ'),
   newpassword: validateDifferentPassword('oldpassword'),
   confirmnewpassword: validateConfirmPassword('newpassword')
 })
@@ -36,7 +33,6 @@ const ChangePassword = () => {
   } = useForm<ChangePasswordInputs>({
     resolver: yupResolver(schema),
     defaultValues: {
-      oldpassword: '',
       newpassword: '',
       confirmnewpassword: ''
     },
@@ -88,12 +84,6 @@ const ChangePassword = () => {
               Đổi mật khẩu
             </h2>
             <div className="mt-8">
-              <InputPassword
-                register={register('oldpassword')}
-                placeholder="Mật khẩu cũ"
-                error={errors.oldpassword}
-                classNameInput="login__input form-control py-3 px-4 block mt-4 w-full"
-              />
               <InputPassword
                 register={register('newpassword')}
                 placeholder="Mật khẩu mới"
