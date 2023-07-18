@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { IListViewQuery } from 'components/ListView'
+import LoadingComponent from 'components/Loading/LoadingComponent'
 import Select from 'components/Select'
 import { Month } from 'contants'
 import { useGlobalContext } from 'contexts/global'
@@ -20,10 +21,12 @@ const ManagermentShift = () => {
   const [daySelect, setDaySelect] = useState<any>('')
   const [dayFilter, setDayFilter] = useState<any[]>([])
   const [queryParams, setQueryParams] = useQueryParam<IListViewQuery>()
+  const [loading, setLoading] = useState(false)
 
   const getData = useCallback(async () => {
     if (!restaurantSelect?.id) return
     if (!daySelect) return
+    setLoading(true)
     try {
       const currentYear = new Date().getFullYear()
       const dateS = daySelect.value.split('-')
@@ -38,6 +41,10 @@ const ManagermentShift = () => {
       })
     } catch (error: any) {
       toastError(error.message)
+    } finally {
+      setTimeout(() => {
+        setLoading(false)
+      }, 500)
     }
   }, [restaurantSelect?.id, daySelect])
 
@@ -141,91 +148,95 @@ const ManagermentShift = () => {
           </p>
         </div>
       </div>
-      <div className="grid grid-cols-1 border">
-        <div className="border-b">
-          <div className="grid max-w-[1000px] grid-cols-3 gap-4">
-            <div className="flex items-center border-r p-3 text-lg font-medium">
-              <div className="flex w-full items-center gap-4">
-                <span>Ngày: </span>
-                <Select
-                  handleFunc={(e) => {
-                    setDaySelect(e)
-                  }}
-                  value={daySelect}
-                  options={dayFilter}
-                  placeholder={'Ngày'}
-                  className="react-select-container z-[70] max-h-[400px] w-full"
-                />
+      {loading ? (
+        <LoadingComponent show />
+      ) : (
+        <div className="grid grid-cols-1 border">
+          <div className="border-b">
+            <div className="grid max-w-[1000px] grid-cols-3 gap-4">
+              <div className="flex items-center border-r p-3 text-lg font-medium">
+                <div className="flex w-full items-center gap-4">
+                  <span>Ngày: </span>
+                  <Select
+                    handleFunc={(e) => {
+                      setDaySelect(e)
+                    }}
+                    value={daySelect}
+                    options={dayFilter}
+                    placeholder={'Ngày'}
+                    className="react-select-container z-[70] max-h-[400px] w-full"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex items-center border-r p-3 text-lg font-medium">
-              <div className="flex w-full items-center gap-4">
-                <span>Tháng: </span>
-                <Select
-                  handleFunc={(e) => {
-                    setMonthSelect(+e.value)
-                  }}
-                  value={
-                    Month?.find((item) => item.value === monthSelect) ||
-                    Month?.[0]
-                  }
-                  options={Month}
-                  placeholder={'Tuần'}
-                  className="react-select-container z-[70] max-h-[400px] w-full"
-                />
+              <div className="flex items-center border-r p-3 text-lg font-medium">
+                <div className="flex w-full items-center gap-4">
+                  <span>Tháng: </span>
+                  <Select
+                    handleFunc={(e) => {
+                      setMonthSelect(+e.value)
+                    }}
+                    value={
+                      Month?.find((item) => item.value === monthSelect) ||
+                      Month?.[0]
+                    }
+                    options={Month}
+                    placeholder={'Tuần'}
+                    className="react-select-container z-[70] max-h-[400px] w-full"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex items-center border-r p-3 text-lg font-medium">
-              <div className="flex w-full items-center gap-4">
-                <span>Năm: </span>
-                <Select
-                  handleFunc={() => {}}
-                  value={{
-                    label: '2023',
-                    value: '2023'
-                  }}
-                  options={[
-                    {
+              <div className="flex items-center border-r p-3 text-lg font-medium">
+                <div className="flex w-full items-center gap-4">
+                  <span>Năm: </span>
+                  <Select
+                    handleFunc={() => {}}
+                    value={{
                       label: '2023',
                       value: '2023'
-                    }
-                  ]}
-                  placeholder={'Tuần'}
-                  className="react-select-container z-[70] max-h-[400px] w-full"
-                />
+                    }}
+                    options={[
+                      {
+                        label: '2023',
+                        value: '2023'
+                      }
+                    ]}
+                    placeholder={'Tuần'}
+                    className="react-select-container z-[70] max-h-[400px] w-full"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex gap-4 border-b">
-          <div className="flex w-[150px] items-center border-r p-3 text-lg font-medium" />
-          <div className="grid flex-1 shrink-0 grid-cols-8">
-            {SHIFT_TIME.map((day) => (
-              <div
-                className="border-r py-3 text-center last:border-none"
-                key={day?.key}
-              >
-                <span className="text-lg font-medium">{day?.name}</span>
-              </div>
-            ))}
+          <div className="flex gap-4 border-b">
+            <div className="flex w-[150px] items-center border-r p-3 text-lg font-medium" />
+            <div className="grid flex-1 shrink-0 grid-cols-8">
+              {SHIFT_TIME.map((day) => (
+                <div
+                  className="border-r py-3 text-center last:border-none"
+                  key={day?.key}
+                >
+                  <span className="text-lg font-medium">{day?.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1">
+            {listHisShift?.length > 0 ? (
+              listHisShift?.map((item) => (
+                <HisShift
+                  key={`ls-em-${item?.employeeId}`}
+                  item={item}
+                  callback={() => getData()}
+                />
+              ))
+            ) : (
+              <p className="p-3 text-center text-lg font-medium">
+                Không có dữ liệu{' '}
+              </p>
+            )}
           </div>
         </div>
-        <div className="grid grid-cols-1">
-          {listHisShift?.length > 0 ? (
-            listHisShift?.map((item) => (
-              <HisShift
-                key={`ls-em-${item?.employeeId}`}
-                item={item}
-                callback={() => getData()}
-              />
-            ))
-          ) : (
-            <p className="p-3 text-center text-lg font-medium">
-              Không có dữ liệu{' '}
-            </p>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   )
 }

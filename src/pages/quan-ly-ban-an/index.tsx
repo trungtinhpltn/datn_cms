@@ -3,6 +3,7 @@ import Icon from 'components/Icon'
 import InputSearch from 'components/Input/InputSearch'
 import type { IListViewQuery } from 'components/ListView'
 import ListViewButtons from 'components/ListView/Buttons'
+import LoadingComponent from 'components/Loading/LoadingComponent'
 import { BASE_TABLEFOOD_LINK } from 'contants/baseLink'
 import { useGlobalContext } from 'contexts/global'
 import { usePopup } from 'contexts/popup'
@@ -28,6 +29,8 @@ const ManagerTableFood = () => {
   const navigate = useNavigate()
   const [queryParams, setQueryParams] = useQueryParam<IListViewQuery>()
   const [listTableFood, setListTableFood] = useState<ITableFood[]>([])
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     return () => clearTimeout(debounceRef.current)
   }, [])
@@ -43,10 +46,17 @@ const ManagerTableFood = () => {
   }, [restaurantSelect, setQueryParams, queryParams])
 
   const getData = useCallback(async () => {
-    const res: any = await getTableFoodByQuery(
-      new URLSearchParams(queryParams).toString()
-    )
-    setListTableFood(res?.data || [])
+    setLoading(true)
+    try {
+      const res: any = await getTableFoodByQuery(
+        new URLSearchParams(queryParams).toString()
+      )
+      setListTableFood(res?.data || [])
+    } catch (error: any) {
+      toastError(error.message || 'Đã có lỗi xảy ra')
+    } finally {
+      setLoading(false)
+    }
   }, [queryParams])
 
   useEffect(() => {
@@ -79,116 +89,129 @@ const ManagerTableFood = () => {
   }
 
   return (
-    <div className="mt-5">
-      <div className="intro-y mt-3 flex flex-col items-center sm:flex-row">
-        <h2 className="mr-auto text-lg font-medium">{`Quản lý bàn ăn`}</h2>
-        <div className="mt-4 flex w-full sm:mt-0 sm:w-auto">
-          <ListViewButtons
-            buttons={[
-              {
-                id: '1',
-                type: 'button',
-                title: 'Thêm bàn ăn',
-                color: 'primary',
-                className: 'shadow-sm mr-2',
-                iconName: 'Plus',
-                onClick: () => {
-                  navigate(BASE_TABLEFOOD_LINK + `/create`)
-                }
-              }
-            ]}
-          />
+    <>
+      {loading ? (
+        <div className="h-screen w-full">
+          <LoadingComponent show />
         </div>
-      </div>
-      <div className="intro-y box mt-5 p-5">
-        <div className="flex w-full items-center justify-center"></div>
-        <div className="flex flex-col sm:flex-row sm:items-end xl:items-start">
-          <div className="flex-1">
-            <InputSearch
-              type="text"
-              className="form-control"
-              defaultValue={queryParams?.q || ''}
-              placeholder="Tìm kiếm"
-              onChange={(e) => {
-                clearTimeout(debounceRef.current)
-                debounceRef.current = setTimeout(() => {
-                  delete queryParams?.['q']
-                  e.target.value
-                    ? setQueryParams({
-                        ...queryParams,
-                        q: e.target.value
-                      })
-                    : setQueryParams({ ...queryParams })
-                }, 1000)
-              }}
-            />
+      ) : (
+        <div className="mt-5">
+          <div className="intro-y mt-3 flex flex-col items-center sm:flex-row">
+            <h2 className="mr-auto text-lg font-medium">{`Quản lý bàn ăn`}</h2>
+            <div className="mt-4 flex w-full sm:mt-0 sm:w-auto">
+              <ListViewButtons
+                buttons={[
+                  {
+                    id: '1',
+                    type: 'button',
+                    title: 'Thêm bàn ăn',
+                    color: 'primary',
+                    className: 'shadow-sm mr-2',
+                    iconName: 'Plus',
+                    onClick: () => {
+                      navigate(BASE_TABLEFOOD_LINK + `/create`)
+                    }
+                  }
+                ]}
+              />
+            </div>
           </div>
-          <div>
-            <FilterAction />
-          </div>
-        </div>
-        <div className="mt-8 grid grid-cols-5 gap-6">
-          {listTableFood?.length > 0 ? (
-            listTableFood?.map((item) => (
-              <div className="box shadow-lg" key={`qlba-it-key-${item?.id}`}>
-                <div
-                  className={classNames(
-                    'bg-secondary p-5 font-medium text-dark',
-                    item.status === 'PENDING' && '!bg-pending text-white',
-                    item.status === 'ACTIVE' && '!bg-success text-white'
-                  )}
-                >
-                  <div className="">
-                    <div className="flex items-center">Tên: {item?.name}</div>
-                    <div className="mt-2 flex items-center">
-                      Mô tả: {item?.description}
-                    </div>
-                    {/* <div className="mt-2 flex items-center">
+          <div className="intro-y box mt-5 p-5">
+            <div className="flex w-full items-center justify-center"></div>
+            <div className="flex flex-col sm:flex-row sm:items-end xl:items-start">
+              <div className="flex-1">
+                <InputSearch
+                  type="text"
+                  className="form-control"
+                  defaultValue={queryParams?.q || ''}
+                  placeholder="Tìm kiếm"
+                  onChange={(e) => {
+                    clearTimeout(debounceRef.current)
+                    debounceRef.current = setTimeout(() => {
+                      delete queryParams?.['q']
+                      e.target.value
+                        ? setQueryParams({
+                            ...queryParams,
+                            q: e.target.value
+                          })
+                        : setQueryParams({ ...queryParams })
+                    }, 1000)
+                  }}
+                />
+              </div>
+              <div>
+                <FilterAction />
+              </div>
+            </div>
+            <div className="mt-8 grid grid-cols-5 gap-6">
+              {listTableFood?.length > 0 ? (
+                listTableFood?.map((item) => (
+                  <div
+                    className="box shadow-lg"
+                    key={`qlba-it-key-${item?.id}`}
+                  >
+                    <div
+                      className={classNames(
+                        'bg-secondary p-5 font-medium text-dark',
+                        item.status === 'PENDING' && '!bg-pending text-white',
+                        item.status === 'ACTIVE' && '!bg-success text-white'
+                      )}
+                    >
+                      <div className="">
+                        <div className="flex items-center">
+                          Tên: {item?.name}
+                        </div>
+                        <div className="mt-2 flex items-center">
+                          Mô tả: {item?.description}
+                        </div>
+                        {/* <div className="mt-2 flex items-center">
                       Giá đặt bàn: {formatCurecy(item?.prePaymentAmount + '')}
                     </div> */}
-                    <div className="mt-2 flex items-center">
-                      Trạng thái:{' '}
-                      {item?.status && tableFoodStatusToText[item?.status]}
+                        <div className="mt-2 flex items-center">
+                          Trạng thái:{' '}
+                          {item?.status && tableFoodStatusToText[item?.status]}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center border-t border-slate-200/60 p-5 font-medium dark:border-darkmode-400 lg:justify-end">
+                      <div
+                        className="mr-auto flex cursor-pointer items-center justify-center text-primary"
+                        onClick={() =>
+                          navigate(BASE_TABLEFOOD_LINK + '/' + item?.id)
+                        }
+                      >
+                        <Eye size={20} />
+                        <span className="relative top-[1px]">Chi tiết</span>
+                      </div>
+                      <div
+                        className="mr-3 flex cursor-pointer items-center justify-center text-warning"
+                        onClick={() => {
+                          navigate(BASE_TABLEFOOD_LINK + `/edit/${item?.id}`)
+                        }}
+                      >
+                        <Icon iconName="Edit" size={20} />
+                        <span className="relative top-[2px]">Sửa</span>
+                      </div>
+                      <div
+                        className="flex cursor-pointer items-center justify-center text-danger"
+                        onClick={() => handleDeleteTable(item?.id)}
+                      >
+                        <Icon iconName="Trash" size={20} />
+                        <span className="relative top-[2px]">Xóa</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center justify-center border-t border-slate-200/60 p-5 font-medium dark:border-darkmode-400 lg:justify-end">
-                  <div
-                    className="mr-auto flex cursor-pointer items-center justify-center text-primary"
-                    onClick={() =>
-                      navigate(BASE_TABLEFOOD_LINK + '/' + item?.id)
-                    }
-                  >
-                    <Eye size={20} />
-                    <span className="relative top-[1px]">Chi tiết</span>
-                  </div>
-                  <div
-                    className="mr-3 flex cursor-pointer items-center justify-center text-warning"
-                    onClick={() => {
-                      navigate(BASE_TABLEFOOD_LINK + `/edit/${item?.id}`)
-                    }}
-                  >
-                    <Icon iconName="Edit" size={20} />
-                    <span className="relative top-[2px]">Sửa</span>
-                  </div>
-                  <div
-                    className="flex cursor-pointer items-center justify-center text-danger"
-                    onClick={() => handleDeleteTable(item?.id)}
-                  >
-                    <Icon iconName="Trash" size={20} />
-                    <span className="relative top-[2px]">Xóa</span>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="col-span-5 w-full text-center text-2xl font-semibold text-dark">
-              Chưa có thông tin bàn
-            </p>
-          )}
+                ))
+              ) : (
+                <p className="col-span-5 w-full text-center text-2xl font-semibold text-dark">
+                  Chưa có thông tin bàn
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   )
 }
 

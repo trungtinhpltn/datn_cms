@@ -20,11 +20,14 @@ const HisShift = ({
 
   useEffect(() => {
     setItemShow(JSON.parse(JSON.stringify(item)))
-    const current = new Date(new Date().toDateString())
-    const start = new Date(item.startDate)
-    const end = new Date(item.endDate)
+    const current = new Date(new Date().toDateString()).getTime()
+    const start = new Date(item.startDate).getTime()
+    const end = new Date(item.endDate).getTime()
 
-    if ((current >= start && current <= end) || current <= start) {
+    if (
+      (current >= start && current <= end) ||
+      (current <= start && item.exits)
+    ) {
       setShowEdit(true)
     }
   }, [item])

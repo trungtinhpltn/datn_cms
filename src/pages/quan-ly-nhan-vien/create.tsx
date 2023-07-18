@@ -334,7 +334,7 @@ const MangermentStaffCreate = () => {
                 <InputForm
                   {...register('trialTime')}
                   help="Đơn vị số ngày"
-                  title={'Thời gian thủ việc'}
+                  title={'Thời gian thử việc'}
                   type="text"
                   error={errors?.trialTime?.message}
                   wrapperClassname="mt-2"

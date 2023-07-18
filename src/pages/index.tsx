@@ -9,39 +9,8 @@ import type { DateTime } from 'litepicker/dist/types/datetime'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { getReport } from 'services/bill.service'
+import { formatCurecy } from 'utils'
 
-const dataF = [
-  {
-    service_id: 17,
-    date: 1688662800,
-    request_count: 7
-  },
-  {
-    service_id: 17,
-    date: 1689008400,
-    request_count: 22
-  },
-  {
-    service_id: 17,
-    date: 1689094800,
-    request_count: 48
-  },
-  {
-    service_id: 17,
-    date: 1689181200,
-    request_count: 252
-  },
-  {
-    service_id: 17,
-    date: 1689526800,
-    request_count: 2
-  },
-  {
-    service_id: 17,
-    date: 1689613200,
-    request_count: 88
-  }
-]
 export default function Home() {
   const { restaurantSelect } = useGlobalContext()
   const [queryParams, setQueryParams] = useQueryParam<IListViewQuery>()
@@ -86,6 +55,10 @@ export default function Home() {
     }
     return result
   }, [from, to, data])
+
+  const total = useMemo(() => {
+    return data?.reduce((p: any, next: any) => p + next?.totalPrice, 0)
+  }, [data])
 
   useEffect(() => {
     setFrom(dayjs().startOf('M').unix())
@@ -144,6 +117,12 @@ export default function Home() {
               </div>
             </div>
             <div className="body relative">
+              <div className="flex w-full">
+                <h3 className="flex-1 text-lg font-medium">
+                  Tổng doanh thu từ {dayjs(from * 1000).format('DD/MM')} đến{' '}
+                  {dayjs(to * 1000).format('DD/MM')}: {formatCurecy(total)}
+                </h3>
+              </div>
               {isError && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/50 text-lg text-red-500">
                   <span className="rounded border-[1px] bg-white px-4 py-2">
