@@ -53,9 +53,9 @@ export const GlobalProvider = ({ children }: React.PropsWithChildren) => {
     })
   }, [])
 
-  useEffect(() => {
-    initRestaurant()
-  }, [initRestaurant])
+  // useEffect(() => {
+  //   initRestaurant()
+  // }, [initRestaurant])
 
   useEffect(() => {
     if (restaurantSelect?.id) {

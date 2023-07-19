@@ -371,7 +371,6 @@ const TableDetail = () => {
             actions={<FilterAction />}
             apiUrl={getApiUrl(`/order/getOrder`)}
             autoGenerateIndex={true}
-            customConfigOptions={{ paginationSize: 20 }}
             columns={[
               {
                 title: 'Tên liên hệ',
