@@ -38,6 +38,7 @@ const TableDetail = () => {
   const { showPopupConfirm } = usePopup()
   const { setActiveMenu } = useMenuContext()
   const [showCancel, setShowCancel] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [bill, setBill] = useState<IBillInfo | null>(null)
   const [listItem, setListItem] = useState<ITableFood[]>([])
   const navigate = useNavigate()
@@ -140,6 +141,8 @@ const TableDetail = () => {
 
   const handleUseTable = async (customer: ICustomer | null = null) => {
     if (!data?.id) return
+    if (loading) return
+    setLoading(true)
     try {
       if (!restaurantSelect) return
       await createBill({
@@ -150,6 +153,8 @@ const TableDetail = () => {
       getData()
     } catch (error: any) {
       toastError(error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -214,7 +219,9 @@ const TableDetail = () => {
   }
   return (
     <>
-      <Loading show={cancelOrder.isLoading || deleteBillMutation.isLoading} />
+      <Loading
+        show={cancelOrder.isLoading || deleteBillMutation.isLoading || loading}
+      />
       {showCancel && (
         <CancelOrder
           show={showCancel}

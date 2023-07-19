@@ -19,7 +19,7 @@ export default function Home() {
   const [to, setTo] = useState<number>(dayjs().endOf('M').unix())
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['report', { from, to }],
+    queryKey: ['report', { from, to, restaurantSelect }],
     enabled: !!from && !!to && !!restaurantSelect?.id,
     queryFn: () => {
       if (!from || !to || !restaurantSelect?.id) {
@@ -66,93 +66,96 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="relative">
-      <div className="intro-y mt-8 flex items-center">
-        <h1 className="mr-auto text-lg font-medium">Thống kê doanh thu</h1>
-      </div>
-      <div className="box relative mt-5 rounded p-8">
-        <div>
-          <div>
-            <div className="flex w-full">
-              <div className="mb-4 flex justify-end space-x-4">
-                <DateStatistic
-                  defaultValue={
-                    from && to
-                      ? `${dayjs(from * 1000).format('DD/MM/YYYY')} - ${dayjs(
-                          to * 1000
-                        ).format('DD/MM/YYYY')}`
-                      : undefined
-                  }
-                  required
-                  hideQuickPick
-                  className="datepicker form-control block w-64"
-                  placeholder="Chọn khoảng thời gian ..."
-                  onApplyRange={({ from, to }) => {
-                    const date1 = dayjs(from).startOf('D')
-                    const date2 = dayjs(to).endOf('D')
-                    setFrom(date1.unix())
-                    setTo(date2.unix())
-                  }}
-                  customOptions={{
-                    lockDaysFilter: (
-                      date1: DateTime,
-                      date2: DateTime,
-                      pickedDates: [DateTime, DateTime]
-                    ) => {
-                      if (pickedDates.length) {
-                        const startDate = pickedDates[0].getTime()
-                        const minDate = startDate - 86400000 * 30
-                        const maxDate = Math.min(
-                          new Date().getTime(),
-                          startDate + 86400000 * 30
-                        )
-                        return (
-                          date1.getTime() < minDate || date1.getTime() > maxDate
-                        )
+    <>
+      {isLoading ? (
+        <div className="h-screen w-full">
+          <LoadingComponent show />
+        </div>
+      ) : (
+        <div className="relative">
+          <div className="intro-y mt-8 flex items-center">
+            <h1 className="mr-auto text-lg font-medium">Thống kê doanh thu</h1>
+          </div>
+          <div className="box relative mt-5 rounded p-8">
+            <div>
+              <div>
+                <div className="flex w-full">
+                  <div className="mb-4 flex justify-end space-x-4">
+                    <DateStatistic
+                      defaultValue={
+                        from && to
+                          ? `${dayjs(from * 1000).format(
+                              'DD/MM/YYYY'
+                            )} - ${dayjs(to * 1000).format('DD/MM/YYYY')}`
+                          : undefined
                       }
-                      return date1.getTime() > new Date().getTime()
-                    }
-                  }}
-                />
-              </div>
-            </div>
-            <div className="body relative">
-              <div className="flex w-full">
-                <h3 className="flex-1 text-lg font-medium">
-                  Tổng doanh thu từ {dayjs(from * 1000).format('DD/MM')} đến{' '}
-                  {dayjs(to * 1000).format('DD/MM')}: {formatCurecy(total)}
-                </h3>
-              </div>
-              {isError && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/50 text-lg text-red-500">
-                  <span className="rounded border-[1px] bg-white px-4 py-2">
-                    Có lỗi xảy ra vui lòng thử lại sau
-                  </span>
+                      required
+                      hideQuickPick
+                      className="datepicker form-control block w-64"
+                      placeholder="Chọn khoảng thời gian ..."
+                      onApplyRange={({ from, to }) => {
+                        const date1 = dayjs(from).startOf('D')
+                        const date2 = dayjs(to).endOf('D')
+                        setFrom(date1.unix())
+                        setTo(date2.unix())
+                      }}
+                      customOptions={{
+                        lockDaysFilter: (
+                          date1: DateTime,
+                          date2: DateTime,
+                          pickedDates: [DateTime, DateTime]
+                        ) => {
+                          if (pickedDates.length) {
+                            const startDate = pickedDates[0].getTime()
+                            const minDate = startDate - 86400000 * 30
+                            const maxDate = Math.min(
+                              new Date().getTime(),
+                              startDate + 86400000 * 30
+                            )
+                            return (
+                              date1.getTime() < minDate ||
+                              date1.getTime() > maxDate
+                            )
+                          }
+                          return date1.getTime() > new Date().getTime()
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
-              )}
-              {isLoading ? (
-                <div className="h-screen w-full">
-                  <LoadingComponent show />
+                <div className="body relative">
+                  <div className="flex w-full">
+                    <h3 className="flex-1 text-lg font-medium">
+                      Tổng doanh thu từ {dayjs(from * 1000).format('DD/MM')} đến{' '}
+                      {dayjs(to * 1000).format('DD/MM')}: {formatCurecy(total)}
+                    </h3>
+                  </div>
+                  {isError && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/50 text-lg text-red-500">
+                      <span className="rounded border-[1px] bg-white px-4 py-2">
+                        Có lỗi xảy ra vui lòng thử lại sau
+                      </span>
+                    </div>
+                  )}
+                  <LineChart
+                    labels={[...Object.keys(dataObject)]}
+                    datasets={[
+                      {
+                        label: 'Tổng số tiền ( Nghìn đồng)',
+                        data: [...Object.values(dataObject)],
+                        borderColor: 'rgb(53, 162, 235)',
+                        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                        fill: true,
+                        lineTension: 0.5
+                      }
+                    ]}
+                  />
                 </div>
-              ) : (
-                <LineChart
-                  labels={[...Object.keys(dataObject)]}
-                  datasets={[
-                    {
-                      label: 'Tổng số tiền ( Nghìn đồng)',
-                      data: [...Object.values(dataObject)],
-                      borderColor: 'rgb(53, 162, 235)',
-                      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-                      fill: true,
-                      lineTension: 0.5
-                    }
-                  ]}
-                />
-              )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   )
 }
