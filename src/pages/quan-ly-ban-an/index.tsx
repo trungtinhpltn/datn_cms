@@ -46,6 +46,8 @@ const ManagerTableFood = () => {
   }, [restaurantSelect, setQueryParams, queryParams])
 
   const getData = useCallback(async () => {
+    if (!queryParams) return
+    if (!queryParams.restaurant_id) return
     setLoading(true)
     try {
       const res: any = await getTableFoodByQuery(
@@ -58,6 +60,8 @@ const ManagerTableFood = () => {
       setLoading(false)
     }
   }, [queryParams])
+
+  console.log('listTableFood', listTableFood)
 
   useEffect(() => {
     getData()

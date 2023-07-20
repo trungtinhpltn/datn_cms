@@ -214,7 +214,7 @@ const BillDetail = () => {
           className="mr-4 mb-4 px-3"
           outline
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/quan-ly-hoa-don')}
         >
           {_t('back')}
         </Button>

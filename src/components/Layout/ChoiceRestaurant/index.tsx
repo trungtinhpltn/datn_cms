@@ -6,10 +6,10 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 
 export default function ChoiceRestaurant() {
-  const { restaurants, restaurantSelect, setRestaurantSelect } =
+  const { restaurants, restaurantSelect, setRestaurantSelect, initRestaurant } =
     useGlobalContext()
   const { setActiveMenu } = useMenuContext()
-  const { user } = useAuth()
+  const { user, isAuthenticated } = useAuth()
   const options = useMemo<{ value: number; label: string }[]>(
     () =>
       restaurants?.map((r) => ({
@@ -39,6 +39,11 @@ export default function ChoiceRestaurant() {
     )
     find && setRestaurantSelect(find)
   }, [user, restaurants, setRestaurantSelect])
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+    initRestaurant()
+  }, [isAuthenticated, initRestaurant])
 
   return (
     <>
