@@ -25,6 +25,7 @@ export default function MenuSideItem(props: IMenuSideItemProps) {
   const toggle = () => setOpen((o) => !o)
 
   const hasPermissionsMenu = (menuItem?: IMenuItem): boolean => {
+    if (!user?.role) return false
     return menuItem?.role?.includes(user?.role) || false
   }
 

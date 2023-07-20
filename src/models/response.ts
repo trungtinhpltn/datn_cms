@@ -32,10 +32,8 @@ export interface IUser {
 
 export type ISignInResponseData = IAuth
 
-export interface ISignOutResponseData extends CommonResponse {
+export interface ISignOutResponseData extends CommonResponse<boolean> {
   data: boolean
 }
 
 export type IGetProfilesResponseData = IUser
-
-export type IForgetPasswordResponseData = CommonResponse

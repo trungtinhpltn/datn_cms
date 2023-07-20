@@ -1,20 +1,15 @@
 import classNames from 'classnames'
 import Dropdown from 'components/Dropdown'
 import Icon from 'components/Icon'
-import { QK } from 'contants/query'
 import { useTabPaneContext } from 'contexts/tabPane'
 import { useEffect, useState } from 'react'
-import { useQueryClient } from 'react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export interface ITabPaneProps {}
-
-export default function TabPane(props: ITabPaneProps) {
+export default function TabPane() {
   const local = useLocation()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState(local.pathname)
   const { listTabPane, setListTabPane } = useTabPaneContext()
-  const queryClient = useQueryClient()
 
   useEffect(() => {
     setActiveTab(local.pathname)
@@ -40,11 +35,8 @@ export default function TabPane(props: ITabPaneProps) {
             )}
             role="presentation"
           >
-            {queryClient.isFetching([QK.TICKET, i.ticketId]) ? (
-              <Icon iconName="Loader2" className="h-4 w-4 animate-spin" />
-            ) : (
-              <Icon iconName="FileSignature" className="h-4 w-4" />
-            )}
+            <Icon iconName="FileSignature" className="h-4 w-4" />
+
             <button
               className="w-32 truncate text-left"
               onClick={() => {

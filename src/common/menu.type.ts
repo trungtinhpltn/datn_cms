@@ -13,6 +13,6 @@ export interface IMenuItem {
   hiddenOnMenu?: boolean
   children?: Array<IMenuItem>
   onClick?: () => void
-  role?: UserRole[]
+  role?: string[]
   childrenLink?: string[]
 }

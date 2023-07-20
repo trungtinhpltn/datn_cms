@@ -1,4 +1,3 @@
-import type { ServiceBoughtDTO } from 'api/interfaces'
 import type { IManagermentRestaurant } from 'models/restaurant'
 import {
   createContext,
@@ -10,8 +9,8 @@ import {
 import { getRestaurantAll } from 'services/restaurant.service'
 
 export interface IGlobalCtxProp {
-  restaurantSelect?: ServiceBoughtDTO
-  setRestaurantSelect: (s: ServiceBoughtDTO) => void
+  restaurantSelect?: IManagermentRestaurant
+  setRestaurantSelect: (s: IManagermentRestaurant) => void
   restaurants?: IManagermentRestaurant[]
   initRestaurant: () => void
 }
