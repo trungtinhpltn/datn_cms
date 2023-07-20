@@ -2,6 +2,7 @@ import DateStatistic from 'components/DatePicker/DateStatistic'
 import LineChart from 'components/LineChart'
 import type { IListViewQuery } from 'components/ListView'
 import LoadingComponent from 'components/Loading/LoadingComponent'
+import { useAuth } from 'contexts/auth'
 import { useGlobalContext } from 'contexts/global'
 import dayjs from 'dayjs'
 import useQueryParam from 'hooks/useQueryParams'
@@ -13,18 +14,19 @@ import { formatCurecy } from 'utils'
 
 export default function Home() {
   const { restaurantSelect } = useGlobalContext()
+  const { user } = useAuth()
   const [queryParams, setQueryParams] = useQueryParam<IListViewQuery>()
-
   const [from, setFrom] = useState<number>(dayjs().startOf('M').unix())
   const [to, setTo] = useState<number>(dayjs().endOf('M').unix())
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['report', { from, to, restaurantSelect }],
-    enabled: !!from && !!to && !!restaurantSelect?.id,
+    queryKey: ['report', { from, to, restaurantSelect, user }],
+    enabled: !!from && !!to && !!restaurantSelect?.id && !!user,
     queryFn: () => {
       if (!from || !to || !restaurantSelect?.id) {
         return
       }
+      if (!user?.role || user.role === 'EMPLOYEE') return
       return getReport({ from, to, restaurant_id: restaurantSelect?.id })
     }
   })
