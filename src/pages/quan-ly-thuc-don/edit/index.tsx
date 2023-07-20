@@ -19,7 +19,6 @@ import {
   getMenuItemById
 } from 'services/menu.service'
 import { uploadFile } from 'services/upload.service'
-import { getMedia } from 'utils'
 import { toastError, toastSuccess } from 'utils/toast'
 import { schemaCreateMenuItem } from 'validate/menu'
 
@@ -88,11 +87,11 @@ const MenuItemEdit = () => {
           const formData = new FormData()
           formData.append('file', selectedFile)
           const res = await uploadFile(formData)
-          if (!res?.data?.file) {
+          if (!res?.data) {
             toastError('Tải ảnh lên thất bại vui lòng thử lại sau.')
             return
           }
-          updateMenuItemMutation.mutate({ ...data, image: res?.data?.file })
+          updateMenuItemMutation.mutate({ ...data, image: res?.data })
           return
         }
         updateMenuItemMutation.mutate(data)
@@ -139,7 +138,7 @@ const MenuItemEdit = () => {
                       src={
                         selectedFile
                           ? URL.createObjectURL(selectedFile)
-                          : getMedia(data?.data?.image)
+                          : data?.data?.image
                       }
                     />
                     {selectedFile && (

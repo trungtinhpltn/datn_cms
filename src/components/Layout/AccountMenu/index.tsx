@@ -5,7 +5,6 @@ import useOnClickOutside from 'hooks/useOnClickOutside'
 import { ToggleRight, User } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { getMedia2 } from 'utils'
 
 export default function AccountMenu() {
   const ref = useRef(null)
@@ -22,9 +21,7 @@ export default function AccountMenu() {
         data-tw-toggle="dropdown"
         onClick={() => setShow(!show)}
       >
-        <Avatar
-          src={user?.Employee?.image ? getMedia2(user?.Employee.image) : ''}
-        />
+        <Avatar src={user?.Employee?.image} />
       </div>
       <div
         className={classNames('dropdown-menu w-56', show && 'show')}

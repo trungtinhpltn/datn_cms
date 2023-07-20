@@ -64,11 +64,11 @@ const MenuItemCreate = () => {
         const formData = new FormData()
         formData.append('file', selectedFile)
         const res = await uploadFile(formData)
-        if (!res?.data?.file) {
+        if (!res?.data) {
           toastError('Tải ảnh lên thất bại vui lòng thử lại sau.')
           return
         }
-        addMenuItemMutation.mutate({ ...data, image: res?.data?.file })
+        addMenuItemMutation.mutate({ ...data, image: res?.data })
       }}
       changeMode={false}
       renderView={({
