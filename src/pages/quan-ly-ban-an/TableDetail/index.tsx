@@ -150,6 +150,7 @@ const TableDetail = () => {
         customer: customer,
         restaurantId: +(restaurantSelect.id + '')
       })
+      toastSuccess('Sử dụng bàn thành công.')
       getData()
     } catch (error: any) {
       toastError(error.message)
@@ -161,7 +162,7 @@ const TableDetail = () => {
   const createBillItemMutation = useMutation({
     mutationFn: (data: IBillItem) => createBillItem(data),
     onSuccess: async () => {
-      toastSuccess('Thêm món ăn thành công')
+      toastSuccess('Thêm món ăn thành công.')
       if (!bill) return
       getBillData(bill.id)
     },

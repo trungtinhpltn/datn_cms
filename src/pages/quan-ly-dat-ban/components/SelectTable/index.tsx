@@ -1,10 +1,12 @@
 import classNames from 'classnames'
 import Popup from 'components/Layout/Popup'
+import Loading from 'components/Loading'
 import { useGlobalContext } from 'contexts/global'
 import type { ITableFood } from 'models/table-food'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { getTableOrder } from 'services/order.service'
+import { toastError } from 'utils/toast'
 
 const SelectTable = ({
   show,
@@ -21,12 +23,18 @@ const SelectTable = ({
   const { restaurantSelect } = useGlobalContext()
   const [listTable, setListTable] = useState<ITableFood[]>([])
   const [selectTb, setSelectTb] = useState<ITableFood | null>(null)
-
+  const [loading, setLoading] = useState(false)
   const getData = useCallback(async () => {
     if (!restaurantSelect?.id) return
+    setLoading(true)
     const res = await getTableOrder(+(id + ''), restaurantSelect?.id)
     setListTable(res)
-  }, [id, restaurantSelect])
+    if (res?.length < 1) {
+      toastError('Hiện tại không có bàn trống. Vui lòng thao tác lại sau.')
+      closePopup()
+    }
+    setLoading(false)
+  }, [id, restaurantSelect, closePopup])
 
   useEffect(() => {
     if (show) {
@@ -40,54 +48,57 @@ const SelectTable = ({
   }
 
   return (
-    <Popup
-      closePopup={() => {
-        closePopup()
-      }}
-      show={show}
-      title={title}
-    >
-      <div className="intro-y col-span-12">
-        <div className="intro-y box">
-          <div className="scrollbar-hidden max-h-[70vh] overflow-auto">
-            <div className="modal-body mt-5 p-0">
-              <div className="grid grid-cols-4 gap-4 px-6">
-                {listTable?.map((item) => (
+    <>
+      <Loading show={loading} />
+      <Popup
+        closePopup={() => {
+          closePopup()
+        }}
+        show={show}
+        title={title}
+      >
+        <div className="intro-y col-span-12">
+          <div className="intro-y box">
+            <div className="scrollbar-hidden max-h-[70vh] overflow-auto">
+              <div className="modal-body mt-5 p-0">
+                <div className="grid grid-cols-4 gap-4 px-6">
+                  {listTable?.map((item) => (
+                    <button
+                      className={`rounded-lg p-5 font-medium ${
+                        selectTb?.id === item?.id
+                          ? `bg-primary text-white`
+                          : `bg-secondary text-dark`
+                      }`}
+                      key={`sl-tb-${item?.id}`}
+                      onClick={() => {
+                        if (selectTb?.id === item?.id) {
+                          setSelectTb(null)
+                          return
+                        }
+                        setSelectTb(item)
+                      }}
+                    >
+                      <p className="text-center">{item?.name}</p>
+                      <p className="text-center">{item?.description}</p>
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-6 px-5 pb-8 text-center">
                   <button
-                    className={`rounded-lg p-5 font-medium ${
-                      selectTb?.id === item?.id
-                        ? `bg-primary text-white`
-                        : `bg-secondary text-dark`
-                    }`}
-                    key={`sl-tb-${item?.id}`}
-                    onClick={() => {
-                      if (selectTb?.id === item?.id) {
-                        setSelectTb(null)
-                        return
-                      }
-                      setSelectTb(item)
-                    }}
+                    type="button"
+                    className={classNames('btn btn-primary w-36')}
+                    disabled={!selectTb}
+                    onClick={handleSelectTable}
                   >
-                    <p className="text-center">{item?.name}</p>
-                    <p className="text-center">{item?.description}</p>
+                    Xác nhận
                   </button>
-                ))}
-              </div>
-              <div className="mt-6 px-5 pb-8 text-center">
-                <button
-                  type="button"
-                  className={classNames('btn btn-primary w-36')}
-                  disabled={!selectTb}
-                  onClick={handleSelectTable}
-                >
-                  Xác nhận
-                </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </Popup>
+      </Popup>
+    </>
   )
 }
 
