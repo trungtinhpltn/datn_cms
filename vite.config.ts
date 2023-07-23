@@ -10,8 +10,5 @@ export default defineConfig({
       src: path.resolve(__dirname, './src')
     }
   },
-  plugins: [react(), tsconfigPaths()],
-  server: {
-    host: true
-  }
+  plugins: [react(), tsconfigPaths()]
 })

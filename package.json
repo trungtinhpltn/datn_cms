@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "start": "vite preview",
+    "start": "serve dist -s -n -L -p $PORT",
     "serve": "vite preview",
     "test": "jest",
     "lint": "eslint src",
@@ -62,6 +62,7 @@
     "react-router-dom": "^6.8.2",
     "react-select": "^5.7.0",
     "react-toastify": "^9.1.1",
+    "serve": "^14.2.0",
     "simplebar": "^5.3.6",
     "socket.io-client": "^4.6.1",
     "tabulator-tables": "^4.9.1",
