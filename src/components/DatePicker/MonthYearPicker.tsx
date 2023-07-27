@@ -78,8 +78,6 @@ export default function MonthYearPicker(props: MonthYearPickerProps) {
 
             newVal[type] = String(value).padStart(2, '0')
 
-            console.log(newVal)
-
             const thisInputValueInFuture =
               Number(newVal[Type.Month]) > thisMonth &&
               Number(newVal[Type.Year]) >= thisYear

@@ -17,6 +17,8 @@ export interface IBillItem {
   itemId?: number
   quantity?: number
   MenuItem?: IMenuItem
+  timeCreated?: number
+  restaurantId?: number
 }
 
 export enum IBillStatus {

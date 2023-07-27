@@ -173,10 +173,13 @@ const TableDetail = () => {
 
   const handleAddBillItem = (value: { label: string; value: number }) => {
     if (!bill) return
+    if (!restaurantSelect) return
     createBillItemMutation.mutate({
       billId: bill.id,
       itemId: value.value,
-      quantity: 1
+      quantity: 1,
+      timeCreated: new Date(new Date().toDateString()).getTime() / 1000,
+      restaurantId: +(restaurantSelect.id + '')
     })
   }
 

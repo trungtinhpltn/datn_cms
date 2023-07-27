@@ -159,7 +159,6 @@ const HisShift = ({
                   outline
                   onClick={() => {
                     setEdit(false)
-                    console.log('item', item)
                     setItemShow(JSON.parse(JSON.stringify(item)))
                   }}
                 >

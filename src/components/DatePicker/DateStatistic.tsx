@@ -45,7 +45,6 @@ export default function DateStatistic({
       showWeekNumbers: true,
       format: {
         parse(date: string | number | Date) {
-          console.log({ date })
           const res = dayjs(date, {
             locale: 'vi-VN',
             format: 'DD/MM/YYYY',
@@ -78,7 +77,6 @@ export default function DateStatistic({
                   const date1 = dayjs().startOf('date').unix() * 1000
                   const date2 = dayjs().endOf('date').unix() * 1000
                   picker.setDateRange(date1, date2)
-                  console.log('date1', date1)
                   onApplyRange({
                     from: date1 || 0,
                     to: date2 || 0

@@ -18,7 +18,7 @@ export const useMenuContext = () => useContext(MenuContext)
 export const menuInit: Array<IMenuItem> = [
   {
     id: 'home',
-    name: 'Trang chủ',
+    name: 'Dashboard',
     url: '/',
     iconName: 'Zap',
     children: [],
@@ -36,7 +36,7 @@ export const menuInit: Array<IMenuItem> = [
     id: 'manager-table-food',
     name: 'Quản lý bàn ăn',
     url: '/quan-ly-ban-an',
-    iconName: 'Home',
+    iconName: 'Table',
     children: [],
     role: ['ADMIN', 'MANAGER']
   },
@@ -44,7 +44,7 @@ export const menuInit: Array<IMenuItem> = [
     id: 'manager-order',
     name: 'Quản lý đặt bàn',
     url: '/quan-ly-dat-ban',
-    iconName: 'Home',
+    iconName: 'Scroll',
     children: [],
     role: ['ADMIN', 'MANAGER']
   },
@@ -52,7 +52,7 @@ export const menuInit: Array<IMenuItem> = [
     id: 'manager-menu',
     name: 'Quản lý thực đơn',
     url: '/quan-ly-thuc-don',
-    iconName: 'Home',
+    iconName: 'Book',
     role: ['ADMIN', 'MANAGER'],
     children: [
       {
@@ -87,7 +87,7 @@ export const menuInit: Array<IMenuItem> = [
     id: 'manager-bill',
     name: 'Quản lý hóa đơn',
     url: '/quan-ly-hoa-don',
-    iconName: 'Home',
+    iconName: 'DollarSign',
     children: [],
     role: ['ADMIN', 'MANAGER']
   },
@@ -95,14 +95,14 @@ export const menuInit: Array<IMenuItem> = [
     id: 'manager-staff',
     name: 'Quản lý nhân viên',
     url: '/quan-ly-nhan-vien',
-    iconName: 'Home',
+    iconName: 'Users',
     children: [],
     role: ['ADMIN', 'MANAGER']
   },
   {
     id: 'manager-job-time',
     name: 'Quản lý ca làm việc',
-    iconName: 'Home',
+    iconName: 'Calendar',
     role: ['ADMIN', 'MANAGER'],
     url: '/quan-ly-ca-lam-viec',
     children: [

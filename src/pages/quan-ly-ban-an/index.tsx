@@ -61,8 +61,6 @@ const ManagerTableFood = () => {
     }
   }, [queryParams])
 
-  console.log('listTableFood', listTableFood)
-
   useEffect(() => {
     getData()
   }, [getData])
