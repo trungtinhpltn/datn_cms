@@ -132,8 +132,8 @@ const PersonalJobTime = () => {
         })
       i++
       if (
-        new Date().getTime() <= lastDay.getTime() &&
-        new Date().getTime() >= firstDay.getTime()
+        new Date(new Date().toDateString()).getTime() <= lastDay.getTime() &&
+        new Date(new Date().toDateString()).getTime() >= firstDay.getTime()
       ) {
         setDaySelect({
           label: option,
