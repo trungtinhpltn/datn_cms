@@ -224,212 +224,222 @@ const BillDetail = () => {
         {bill && (
           <div className="flex flex-row gap-6">
             {bill.status === 'PENDING' ? (
-              <div className="max-w-[500px] flex-1">
-                <h2 className="mr-auto text-2xl font-bold">
-                  Thông tin hóa đơn
-                </h2>
-                <div className="mt-7 grid grid-cols-1 gap-4 text-lg font-medium">
-                  {bill.Customer && (
-                    <span>Khách hàng: {bill.Customer.name}</span>
-                  )}
-                  {bill.Customer && <span>SĐT: {bill.Customer.phone}</span>}
-                  <span>Ngày tạo: {formatDate(bill.createdAt)}</span>
+              <div className="flex flex-col">
+                <div>
+                  <h2 className="mr-auto text-2xl font-bold">
+                    Thông tin hóa đơn
+                  </h2>
                 </div>
-                <div className="mt-4 grid grid-cols-1 gap-4 text-lg font-medium">
-                  <p>Danh sách món đã chọn:</p>
-                  <div className="grid max-w-[500px] grid-cols-1 bg-white p-4 shadow-sm">
-                    {bill && bill.billItems.length === 0 && (
-                      <p className="text-center">Trống</p>
-                    )}
-                    {bill &&
-                      bill.billItems.map((item) => (
-                        <BillItem
-                          key={`billit-${item?.id}`}
-                          item={item}
-                          callBack={() => getBillData()}
-                          payment={true}
-                        />
-                      ))}
-                    {bill.billItems.length > 0 && (
-                      <div className="mb-3 border-b pb-4 last:mb-0 last:border-0 last:pb-0">
-                        <div className="mt-1 flex items-center justify-between gap-2">
-                          <span>Tổng số tiền:</span>
-                          <span>{formatCurecy(totalPrice + '')}</span>
-                        </div>
-                        <div className="mt-1 flex items-center justify-between gap-2">
-                          <span>Thuế VAT(10%):</span>
-                          <span>
-                            {formatCurecy(Math.floor(totalPrice / 10) + '')}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex items-center justify-between gap-2">
-                          <span>Số tiền thanh toán:</span>
-                          <span>{formatCurecy(totalPayment + '')}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex justify-center">
-                    <Select
-                      handleFunc={(e) => {
-                        if (e.value)
-                          handleAddBillItem({
-                            label: e.label,
-                            value: +e.value
-                          })
-                      }}
-                      value={''}
-                      options={options}
-                      placeholder={'Thêm món'}
-                      className="react-select-container z-[70] max-h-[400px] w-full"
-                    />
-                  </div>
-                </div>
-                <form className={classNames('mt-6')}>
-                  <div
-                    className={classNames(bill && bill.Customer && 'hidden')}
-                  >
-                    <h3 className="text-xl font-medium">
-                      Thông tin khách hàng
-                    </h3>
-                    <div className="p-5">
-                      <InputForm
-                        {...register('phone')}
-                        type="text"
-                        title={'Số điện thoại'}
-                        required
-                        error={errors?.phone?.message}
-                      />
-                      <InputForm
-                        {...register('name')}
-                        title={'Họ và tên khách hàng'}
-                        type="text"
-                        required
-                        error={errors?.name?.message}
-                      />
+                <div className="flex gap-6">
+                  <div className="w-[500px] flex-1">
+                    <div className="mt-7 grid grid-cols-1 gap-4 text-lg font-medium">
+                      {bill.Customer && (
+                        <span>Khách hàng: {bill.Customer.name}</span>
+                      )}
+                      {bill.Customer && <span>SĐT: {bill.Customer.phone}</span>}
+                      <span>Ngày tạo: {formatDate(bill.createdAt)}</span>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium">
-                      Hình thức thanh toán
-                    </h3>
-                    <div className="p-5">
+                    <div className="mt-4 grid grid-cols-1 gap-4 text-lg font-medium">
+                      <p>Danh sách món đã chọn:</p>
+                      <div className="grid max-w-[500px] grid-cols-1 bg-white p-4 shadow-sm">
+                        {bill && bill.billItems.length === 0 && (
+                          <p className="text-center">Trống</p>
+                        )}
+                        {bill &&
+                          bill.billItems.map((item) => (
+                            <BillItem
+                              key={`billit-${item?.id}`}
+                              item={item}
+                              callBack={() => getBillData()}
+                              payment={true}
+                            />
+                          ))}
+                        {bill.billItems.length > 0 && (
+                          <div className="mb-3 border-b pb-4 last:mb-0 last:border-0 last:pb-0">
+                            <div className="mt-1 flex items-center justify-between gap-2">
+                              <span>Tổng số tiền:</span>
+                              <span>{formatCurecy(totalPrice + '')}</span>
+                            </div>
+                            <div className="mt-1 flex items-center justify-between gap-2">
+                              <span>Thuế VAT(10%):</span>
+                              <span>
+                                {formatCurecy(Math.floor(totalPrice / 10) + '')}
+                              </span>
+                            </div>
+                            <div className="mt-1 flex items-center justify-between gap-2">
+                              <span>Số tiền thanh toán:</span>
+                              <span>{formatCurecy(totalPayment + '')}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                       <div className="flex justify-center">
                         <Select
                           handleFunc={(e) => {
-                            setValue('customerPay', 0, {
-                              shouldValidate: true
-                            })
-                            if (e) {
-                              setValue('paymentMethod', e?.value + '', {
-                                shouldValidate: true
+                            if (e.value)
+                              handleAddBillItem({
+                                label: e.label,
+                                value: +e.value
                               })
-                              if (e?.value === 'ATM') {
-                                setValue('customerPay', totalPayment, {
+                          }}
+                          value={''}
+                          options={options}
+                          placeholder={'Thêm món'}
+                          className="react-select-container z-[70] max-h-[400px] w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-[500px]">
+                    <form className={classNames('mt-6')}>
+                      <div
+                        className={classNames(
+                          bill && bill.Customer && 'hidden'
+                        )}
+                      >
+                        <h3 className="text-xl font-medium">
+                          Thông tin khách hàng
+                        </h3>
+                        <div className="p-5">
+                          <InputForm
+                            {...register('phone')}
+                            type="text"
+                            title={'Số điện thoại'}
+                            required
+                            error={errors?.phone?.message}
+                          />
+                          <InputForm
+                            {...register('name')}
+                            title={'Họ và tên khách hàng'}
+                            type="text"
+                            required
+                            error={errors?.name?.message}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-medium">
+                          Hình thức thanh toán
+                        </h3>
+                        <div className="p-5">
+                          <div className="flex justify-center">
+                            <Select
+                              handleFunc={(e) => {
+                                setValue('customerPay', 0, {
                                   shouldValidate: true
                                 })
-                              }
-                              return
-                            }
-                            setValue('paymentMethod', '', {
-                              shouldValidate: true
-                            })
-                          }}
-                          options={[
-                            {
-                              label: 'Tiền mặt',
-                              value: 'CASH'
-                            },
-                            {
-                              label: 'Thanh toán online',
-                              value: 'ATM'
-                            }
-                          ]}
-                          isClearable
-                          placeholder={'Hình thức thanh toán'}
-                          className="react-select-container z-[50] w-full"
-                        />
-                      </div>
-                      {errors.paymentMethod && (
-                        <p className="mt-2 text-danger">
-                          {errors.paymentMethod.message}
-                        </p>
-                      )}
-                    </div>
-                    {watch('paymentMethod') === 'CASH' && (
-                      <div className="px-5">
-                        <InputForm
-                          {...register('customerPay')}
-                          type="text"
-                          title={'Số tiền khách thanh toán'}
-                          required
-                          error={errors?.customerPay?.message}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  {watch('customerPay') > watch('paymentPrice') && (
-                    <div className="mt-5">
-                      <h3 className="text-xl font-medium">
-                        Trả lại:{' '}
-                        {formatCurecy(
-                          watch('customerPay') - watch('paymentPrice') + ''
+                                if (e) {
+                                  setValue('paymentMethod', e?.value + '', {
+                                    shouldValidate: true
+                                  })
+                                  if (e?.value === 'ATM') {
+                                    setValue('customerPay', totalPayment, {
+                                      shouldValidate: true
+                                    })
+                                  }
+                                  return
+                                }
+                                setValue('paymentMethod', '', {
+                                  shouldValidate: true
+                                })
+                              }}
+                              options={[
+                                {
+                                  label: 'Tiền mặt',
+                                  value: 'CASH'
+                                },
+                                {
+                                  label: 'Thanh toán online',
+                                  value: 'ATM'
+                                }
+                              ]}
+                              isClearable
+                              placeholder={'Hình thức thanh toán'}
+                              className="react-select-container z-[50] w-full"
+                            />
+                          </div>
+                          {errors.paymentMethod && (
+                            <p className="mt-2 text-danger">
+                              {errors.paymentMethod.message}
+                            </p>
+                          )}
+                        </div>
+                        {watch('paymentMethod') === 'CASH' && (
+                          <div className="px-5">
+                            <InputForm
+                              {...register('customerPay')}
+                              type="text"
+                              title={'Số tiền khách thanh toán'}
+                              required
+                              error={errors?.customerPay?.message}
+                            />
+                          </div>
                         )}
-                      </h3>
+                      </div>
+                      {watch('customerPay') > watch('paymentPrice') && (
+                        <div className="mt-5">
+                          <h3 className="text-xl font-medium">
+                            Trả lại:{' '}
+                            {formatCurecy(
+                              watch('customerPay') - watch('paymentPrice') + ''
+                            )}
+                          </h3>
+                        </div>
+                      )}
+                    </form>
+                    <div className="mt-6 flex w-full justify-center">
+                      <Button
+                        color="success"
+                        className="mr-2 !w-[150px] sm:w-auto"
+                        size="lg"
+                        iconName="Move"
+                        outline
+                        onClick={() => {
+                          navigate(
+                            BASE_TABLEFOOD_LINK +
+                              '/' +
+                              bill?.billTableOrder?.tableId
+                          )
+                          setActiveMenu({
+                            id: 'manager-table-food',
+                            name: 'Quản lý bàn ăn',
+                            url: '/quan-ly-ban-an',
+                            iconName: 'Home',
+                            children: []
+                          })
+                        }}
+                      >
+                        Đến bàn
+                      </Button>
+                      <Button
+                        color="danger"
+                        className="mr-2  sm:w-auto"
+                        size="lg"
+                        iconName="Trash"
+                        onClick={() => {
+                          showPopupConfirm({
+                            title: 'Xác nhận hủy hóa đơn',
+                            message: 'Bạn có chắc muốn hủy hóa đơn này?',
+                            comfirmCallback: async ({ setShow }) => {
+                              handleCancelBill()
+                              setShow(false)
+                            }
+                          })
+                        }}
+                      >
+                        Hủy hóa đơn
+                      </Button>
+                      <Button
+                        color="primary"
+                        className="mr-2  sm:w-auto"
+                        size="lg"
+                        iconName="DollarSign"
+                        onClick={handleSubmit(onSubmit)}
+                      >
+                        Thanh toán
+                      </Button>
                     </div>
-                  )}
-                </form>
-                <div className="mt-6 flex w-full justify-center">
-                  <Button
-                    color="success"
-                    className="mr-2 !w-[150px] sm:w-auto"
-                    size="lg"
-                    iconName="Move"
-                    outline
-                    onClick={() => {
-                      navigate(
-                        BASE_TABLEFOOD_LINK +
-                          '/' +
-                          bill?.billTableOrder?.tableId
-                      )
-                      setActiveMenu({
-                        id: 'manager-table-food',
-                        name: 'Quản lý bàn ăn',
-                        url: '/quan-ly-ban-an',
-                        iconName: 'Home',
-                        children: []
-                      })
-                    }}
-                  >
-                    Đến bàn
-                  </Button>
-                  <Button
-                    color="danger"
-                    className="mr-2  sm:w-auto"
-                    size="lg"
-                    iconName="Trash"
-                    onClick={() => {
-                      showPopupConfirm({
-                        title: 'Xác nhận hủy hóa đơn',
-                        message: 'Bạn có chắc muốn hủy hóa đơn này?',
-                        comfirmCallback: async ({ setShow }) => {
-                          handleCancelBill()
-                          setShow(false)
-                        }
-                      })
-                    }}
-                  >
-                    Hủy hóa đơn
-                  </Button>
-                  <Button
-                    color="primary"
-                    className="mr-2  sm:w-auto"
-                    size="lg"
-                    iconName="DollarSign"
-                    onClick={handleSubmit(onSubmit)}
-                  >
-                    Thanh toán
-                  </Button>
+                  </div>
                 </div>
               </div>
             ) : (

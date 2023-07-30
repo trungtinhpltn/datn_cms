@@ -75,9 +75,9 @@ export default function LoginPage() {
                   classNameInput="intro-x login__input form-control py-3 px-4 block mt-4"
                 />
               </div>
-              <div className="intro-x mt-4 flex justify-end text-xs text-slate-600 dark:text-slate-500 sm:text-sm">
+              {/* <div className="intro-x mt-4 flex justify-end text-xs text-slate-600 dark:text-slate-500 sm:text-sm">
                 <Link to="/forgetPassword">{_t('login.forgetpassword')}</Link>
-              </div>
+              </div> */}
               <div className="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                 <button className="btn btn-primary w-full py-3 px-4 align-top xl:mr-3 xl:w-32">
                   {_t('login')}
