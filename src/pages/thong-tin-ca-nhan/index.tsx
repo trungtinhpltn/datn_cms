@@ -1,4 +1,3 @@
-import { baseUrlMedia } from 'common/config'
 import EditView from 'components/EditView'
 import InputForm from 'components/Input/InputForm'
 import InputImage from 'components/Input/InputImage'
@@ -16,7 +15,6 @@ import { provinceAPI } from 'services/province.service'
 import * as yup from 'yup'
 
 const makeDefaultData = (data: any) => {
-  if (data.image) data.image = baseUrlMedia + data.image
   if (data.dateOfBirth)
     data.dateOfBirth = new Date(data.dateOfBirth).toISOString().substring(0, 10)
   if (data.dateContract)
