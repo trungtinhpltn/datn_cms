@@ -36,14 +36,12 @@ const ManagerTableFood = () => {
   }, [])
 
   useEffect(() => {
-    if (queryParams && queryParams.restaurant_id) return
-    if (restaurantSelect?.id) {
-      setQueryParams((queryParams) => ({
-        ...queryParams,
-        restaurant_id: restaurantSelect?.id
-      }))
-    }
-  }, [restaurantSelect, setQueryParams, queryParams])
+    if (!restaurantSelect) return
+    setQueryParams((queryParams) => ({
+      ...queryParams,
+      restaurant_id: restaurantSelect?.id
+    }))
+  }, [restaurantSelect, setQueryParams])
 
   const getData = useCallback(async () => {
     if (!queryParams) return

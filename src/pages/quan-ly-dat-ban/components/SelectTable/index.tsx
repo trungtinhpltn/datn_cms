@@ -1,47 +1,22 @@
 import classNames from 'classnames'
 import Popup from 'components/Layout/Popup'
-import Loading from 'components/Loading'
-import { useGlobalContext } from 'contexts/global'
 import type { ITableFood } from 'models/table-food'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
-import { getTableOrder } from 'services/order.service'
-import { toastError } from 'utils/toast'
+import React, { useState } from 'react'
 
 const SelectTable = ({
   show,
   closePopup,
   handleUpdateOrder,
+  listTable,
   title
 }: {
   show: boolean
   closePopup: () => void
   handleUpdateOrder: (id: number) => void
+  listTable: ITableFood[]
   title: string
 }) => {
-  const { id } = useParams()
-  const { restaurantSelect } = useGlobalContext()
-  const [listTable, setListTable] = useState<ITableFood[]>([])
   const [selectTb, setSelectTb] = useState<ITableFood | null>(null)
-  const [loading, setLoading] = useState(false)
-  const getData = useCallback(async () => {
-    if (!restaurantSelect?.id) return
-    setLoading(true)
-    const res = await getTableOrder(+(id + ''), restaurantSelect?.id)
-    setListTable(res)
-    if (res?.length < 1) {
-      toastError('Hiện tại không có bàn trống. Vui lòng thao tác lại sau.')
-      closePopup()
-    }
-    setLoading(false)
-  }, [id, restaurantSelect, closePopup])
-
-  useEffect(() => {
-    if (show) {
-      getData()
-    }
-  }, [show, getData])
-
   const handleSelectTable = () => {
     if (!selectTb?.id) return
     handleUpdateOrder(selectTb?.id)
@@ -49,7 +24,6 @@ const SelectTable = ({
 
   return (
     <>
-      <Loading show={loading} />
       <Popup
         closePopup={() => {
           closePopup()

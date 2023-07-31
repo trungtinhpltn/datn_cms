@@ -7,7 +7,7 @@ import { Month } from 'contants'
 import { useGlobalContext } from 'contexts/global'
 import useQueryParam from 'hooks/useQueryParams'
 import type { IHisShift } from 'models/shift'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getHisShiftByRestaurant } from 'services/shift.service'
 import { toastError } from 'utils/toast'
 
@@ -21,7 +21,7 @@ const ManagermentShift = () => {
   const [daySelect, setDaySelect] = useState<any>('')
   const [dayFilter, setDayFilter] = useState<any[]>([])
   const [queryParams, setQueryParams] = useQueryParam<IListViewQuery>()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const getData = useCallback(async () => {
     if (!restaurantSelect?.id) return
@@ -132,112 +132,121 @@ const ManagermentShift = () => {
     optionsByWeekFunc()
   }, [optionsByWeekFunc])
 
+  const showHisShift = useMemo(() => {
+    if (listHisShift?.length <= 0) return false
+    const check = listHisShift?.find((item) => item.exits)
+    if (check) return true
+    return true
+  }, [listHisShift])
+
   return (
-    <div className="mt-5">
-      <div className="mb-6">
-        <h2 className="mr-auto text-2xl font-bold">Quản lý ca làm việc</h2>
-        <div className="mt-4">
-          <p>
-            Sáng: <span className="font-medium">Từ 8h:00 - 13h:00</span>
-          </p>
-          <p>
-            Chiều: <span className="font-medium">Từ 13h:00 - 18h:00</span>
-          </p>
-          <p>
-            Tối: <span className="font-medium">Từ 18h:00 - 22h:00</span>
-          </p>
-        </div>
-      </div>
+    <>
       {loading ? (
         <LoadingComponent show />
       ) : (
-        <div className="grid grid-cols-1 border">
-          <div className="border-b">
-            <div className="grid max-w-[1000px] grid-cols-3 gap-4">
-              <div className="flex items-center border-r p-3 text-lg font-medium">
-                <div className="flex w-full items-center gap-4">
-                  <span>Ngày: </span>
-                  <Select
-                    handleFunc={(e) => {
-                      setDaySelect(e)
-                    }}
-                    value={daySelect}
-                    options={dayFilter}
-                    placeholder={'Ngày'}
-                    className="react-select-container z-[70] max-h-[400px] w-full"
-                  />
+        <div className="mt-5">
+          <div className="mb-6">
+            <h2 className="mr-auto text-2xl font-bold">Quản lý ca làm việc</h2>
+            <div className="mt-4">
+              <p>
+                Sáng: <span className="font-medium">Từ 8h:00 - 13h:00</span>
+              </p>
+              <p>
+                Chiều: <span className="font-medium">Từ 13h:00 - 18h:00</span>
+              </p>
+              <p>
+                Tối: <span className="font-medium">Từ 18h:00 - 22h:00</span>
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 border">
+            <div className="border-b">
+              <div className="grid max-w-[1000px] grid-cols-3 gap-4">
+                <div className="flex items-center border-r p-3 text-lg font-medium">
+                  <div className="flex w-full items-center gap-4">
+                    <span>Ngày: </span>
+                    <Select
+                      handleFunc={(e) => {
+                        setDaySelect(e)
+                      }}
+                      value={daySelect}
+                      options={dayFilter}
+                      placeholder={'Ngày'}
+                      className="react-select-container z-[70] max-h-[400px] w-full"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center border-r p-3 text-lg font-medium">
-                <div className="flex w-full items-center gap-4">
-                  <span>Tháng: </span>
-                  <Select
-                    handleFunc={(e) => {
-                      setMonthSelect(+e.value)
-                    }}
-                    value={
-                      Month?.find((item) => item.value === monthSelect) ||
-                      Month?.[0]
-                    }
-                    options={Month}
-                    placeholder={'Tuần'}
-                    className="react-select-container z-[70] max-h-[400px] w-full"
-                  />
+                <div className="flex items-center border-r p-3 text-lg font-medium">
+                  <div className="flex w-full items-center gap-4">
+                    <span>Tháng: </span>
+                    <Select
+                      handleFunc={(e) => {
+                        setMonthSelect(+e.value)
+                      }}
+                      value={
+                        Month?.find((item) => item.value === monthSelect) ||
+                        Month?.[0]
+                      }
+                      options={Month}
+                      placeholder={'Tuần'}
+                      className="react-select-container z-[70] max-h-[400px] w-full"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center border-r p-3 text-lg font-medium">
-                <div className="flex w-full items-center gap-4">
-                  <span>Năm: </span>
-                  <Select
-                    handleFunc={() => {}}
-                    value={{
-                      label: '2023',
-                      value: '2023'
-                    }}
-                    options={[
-                      {
+                <div className="flex items-center border-r p-3 text-lg font-medium">
+                  <div className="flex w-full items-center gap-4">
+                    <span>Năm: </span>
+                    <Select
+                      handleFunc={() => {}}
+                      value={{
                         label: '2023',
                         value: '2023'
-                      }
-                    ]}
-                    placeholder={'Tuần'}
-                    className="react-select-container z-[70] max-h-[400px] w-full"
-                  />
+                      }}
+                      options={[
+                        {
+                          label: '2023',
+                          value: '2023'
+                        }
+                      ]}
+                      placeholder={'Tuần'}
+                      className="react-select-container z-[70] max-h-[400px] w-full"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="flex gap-4 border-b">
-            <div className="flex w-[150px] items-center border-r p-3 text-lg font-medium" />
-            <div className="grid flex-1 shrink-0 grid-cols-8">
-              {SHIFT_TIME.map((day) => (
-                <div
-                  className="border-r py-3 text-center last:border-none"
-                  key={day?.key}
-                >
-                  <span className="text-lg font-medium">{day?.name}</span>
-                </div>
-              ))}
+            <div className="flex gap-4 border-b">
+              <div className="flex w-[150px] items-center border-r p-3 text-lg font-medium" />
+              <div className="grid flex-1 shrink-0 grid-cols-8">
+                {SHIFT_TIME.map((day) => (
+                  <div
+                    className="border-r py-3 text-center last:border-none"
+                    key={day?.key}
+                  >
+                    <span className="text-lg font-medium">{day?.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1">
-            {listHisShift?.length > 0 ? (
-              listHisShift?.map((item) => (
-                <HisShift
-                  key={`ls-em-${item?.employeeId}`}
-                  item={item}
-                  callback={() => getData()}
-                />
-              ))
-            ) : (
-              <p className="p-3 text-center text-lg font-medium">
-                Không có dữ liệu{' '}
-              </p>
-            )}
+            <div className="grid grid-cols-1">
+              {showHisShift ? (
+                listHisShift?.map((item) => (
+                  <HisShift
+                    key={`ls-em-${item?.employeeId}`}
+                    item={item}
+                    callback={() => getData()}
+                  />
+                ))
+              ) : (
+                <p className="p-3 text-center text-lg font-medium">
+                  Không có dữ liệu{' '}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
 

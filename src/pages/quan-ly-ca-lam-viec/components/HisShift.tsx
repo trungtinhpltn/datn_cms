@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Button from 'components/Button'
 import type { IHisShift } from 'models/shift'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { createHisShift, updateHisShift } from 'services/shift.service'
 import { toastError, toastSuccess } from 'utils/toast'
 
@@ -14,22 +14,23 @@ const HisShift = ({
   item: IHisShift
   callback: () => void
 }) => {
-  const [showEdit, setShowEdit] = useState(false)
   const [edit, setEdit] = useState(false)
   const [itemShow, setItemShow] = useState<any>()
 
   useEffect(() => {
     setItemShow(JSON.parse(JSON.stringify(item)))
+  }, [item])
+
+  const showEdit = useMemo(() => {
     const current = new Date(new Date().toDateString()).getTime()
     const start = new Date(item.startDate).getTime()
-    const end = new Date(item.endDate).getTime()
 
-    if (
-      (current >= start && current <= end) ||
-      (current <= start && item.exits)
-    ) {
-      setShowEdit(true)
+    const end = new Date(item.endDate).getTime()
+    if (current >= start && current <= end) {
+      return true
     }
+    if (current <= start && item.exits) return true
+    return false
   }, [item])
 
   const handlePick = (pick: { key: string; value: number }) => {
