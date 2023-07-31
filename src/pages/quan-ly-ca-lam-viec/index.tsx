@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
+import Button from 'components/Button'
 import type { IListViewQuery } from 'components/ListView'
 import LoadingComponent from 'components/Loading/LoadingComponent'
 import Select from 'components/Select'
@@ -157,6 +158,27 @@ const ManagermentShift = () => {
               <p>
                 Tối: <span className="font-medium">Từ 18h:00 - 22h:00</span>
               </p>
+            </div>
+            <div className="mt-4 flex flex-col gap-4">
+              <div className="flex items-center">
+                <Button
+                  color="primary"
+                  className="pointer-events-none mr-2 !w-[120px] !py-4 sm:w-auto"
+                  size="md"
+                  disableClassName="!opacity-80"
+                  outline
+                />
+                <span>Ca không làm</span>
+              </div>
+              <div className="flex items-center">
+                <Button
+                  color="primary"
+                  className="pointer-events-none mr-2 !w-[120px] !py-4 sm:w-auto"
+                  size="md"
+                  disableClassName="!opacity-80"
+                />
+                <span>Ca làm</span>
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-1 border">

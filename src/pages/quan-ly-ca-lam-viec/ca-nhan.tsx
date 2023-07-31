@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import Button from 'components/Button'
+import Loading from 'components/Loading'
+import LoadingComponent from 'components/Loading/LoadingComponent'
 import Select from 'components/Select'
 import { Month } from 'contants'
 import { useAuth } from 'contexts/auth'
@@ -43,13 +45,13 @@ const PersonalJobTime = () => {
   const [monthSelect, setMonthSelect] = useState(new Date().getMonth() + 1)
   const [daySelect, setDaySelect] = useState<any>('')
   const [dayFilter, setDayFilter] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   const getData = useCallback(() => {
     if (!user?.Employee?.id) return
     if (user?.Employee?.id <= 0) return
     getShiftByUserId(user?.Employee?.id || -1).then((res) => {
       if (res) {
-        // setShitfPick(res)
         setUserShift(res)
         setMsg('Thay đổi thành công.')
       }
@@ -75,6 +77,7 @@ const PersonalJobTime = () => {
     if (!restaurantSelect?.id) return
     if (!user?.Employee?.id) return
     if (!daySelect) return
+    setLoading(true)
     try {
       const currentYear = new Date().getFullYear()
       const dateS = daySelect.value.split('-')
@@ -89,6 +92,8 @@ const PersonalJobTime = () => {
       })
     } catch (error: any) {
       toastError(error.message)
+    } finally {
+      setLoading(false)
     }
   }, [restaurantSelect?.id, daySelect, user?.Employee?.id])
 
@@ -205,238 +210,270 @@ const PersonalJobTime = () => {
   }
 
   return (
-    <div className="mt-5">
-      <div className="mb-6">
-        <h2 className="mr-auto text-2xl font-bold">Quản lý ca làm việc</h2>
-        <div className="mt-4">
-          <p>
-            Sáng: <span className="font-medium">Từ 8h:00 - 13h:00</span>
-          </p>
-          <p>
-            Chiều: <span className="font-medium">Từ 13h:00 - 18h:00</span>
-          </p>
-          <p>
-            Tối: <span className="font-medium">Từ 18h:00 - 22h:00</span>
-          </p>
-        </div>
-      </div>
-      <div className="grid grid-cols-7 border border-b-0">
-        {SHIFT_TIME.map((item) => (
-          <div
-            className="border-r py-3 text-center last:border-none"
-            key={item?.key}
-          >
-            <span className="text-lg font-medium">{item?.name}</span>
+    <>
+      <Loading show={createShiftMutation.isLoading} />
+      {loading ? (
+        <LoadingComponent show />
+      ) : (
+        <div className="mt-5">
+          <div className="mb-6">
+            <h2 className="mr-auto text-2xl font-bold">Quản lý ca làm việc</h2>
+            <div className="mt-4">
+              <p>
+                Sáng: <span className="font-medium">Từ 8h:00 - 13h:00</span>
+              </p>
+              <p>
+                Chiều: <span className="font-medium">Từ 13h:00 - 18h:00</span>
+              </p>
+              <p>
+                Tối: <span className="font-medium">Từ 18h:00 - 22h:00</span>
+              </p>
+            </div>
+            <div className="mt-4 flex flex-col gap-4">
+              <div className="flex items-center">
+                <Button
+                  color="primary"
+                  className="pointer-events-none mr-2 !w-[120px] !py-4 sm:w-auto"
+                  size="md"
+                  disableClassName="!opacity-80"
+                  outline
+                />
+                <span>Ca không làm</span>
+              </div>
+              <div className="flex items-center">
+                <Button
+                  color="primary"
+                  className="pointer-events-none mr-2 !w-[120px] !py-4 sm:w-auto"
+                  size="md"
+                  disableClassName="!opacity-80"
+                />
+                <span>Ca làm</span>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-7 border">
-        {SHIFT_TIME.map((item) => (
-          <div
-            key={item?.key}
-            className={'last-border-none grid grid-cols-1 gap-2 border-r p-3'}
-          >
-            <Button
-              color="primary"
-              className="mr-2 w-[30px] sm:w-auto"
-              iconName="Clock1"
-              size="md"
-              outline={!shitfPick?.[item?.key]?.includes(1)}
-              onClick={() => {
-                handlePick({ key: item?.key, value: 1 })
-              }}
-              disable={!edit && !!userShift}
-              disableClassName="!opacity-80"
-            >
-              Ca sáng
-            </Button>
-            <Button
-              color="primary"
-              className="mr-2 w-[30px] sm:w-auto"
-              iconName="Clock1"
-              size="md"
-              outline={!shitfPick?.[item?.key]?.includes(2)}
-              onClick={() => {
-                handlePick({ key: item?.key, value: 2 })
-              }}
-              disable={!edit && !!userShift}
-              disableClassName="!opacity-80"
-            >
-              Ca chiều
-            </Button>
-            <Button
-              color="primary"
-              className="mr-2 w-[30px] sm:w-auto"
-              iconName="Clock1"
-              size="md"
-              outline={!shitfPick?.[item?.key]?.includes(3)}
-              onClick={() => {
-                handlePick({ key: item?.key, value: 3 })
-              }}
-              disable={!edit && !!userShift}
-              disableClassName="!opacity-80"
-            >
-              Ca tối
-            </Button>
-          </div>
-        ))}
-      </div>
-      <div className="mt-6 flex justify-center">
-        {userShift ? (
-          edit ? (
-            <div className="flex justify-center gap-6">
-              <Button
-                color="danger"
-                className="mr-2 !w-[130px] sm:w-auto"
-                size="md"
-                outline
-                onClick={() => {
-                  setEdit(false)
-                  getData()
-                }}
+          <div className="grid grid-cols-7 border border-b-0">
+            {SHIFT_TIME.map((item) => (
+              <div
+                className="border-r py-3 text-center last:border-none"
+                key={item?.key}
               >
-                Hủy
-              </Button>
+                <span className="text-lg font-medium">{item?.name}</span>
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7 border">
+            {SHIFT_TIME.map((item) => (
+              <div
+                key={item?.key}
+                className={
+                  'last-border-none grid grid-cols-1 gap-2 border-r p-3'
+                }
+              >
+                <Button
+                  color="primary"
+                  className="mr-2 w-[30px] sm:w-auto"
+                  iconName="Clock1"
+                  size="md"
+                  outline={!shitfPick?.[item?.key]?.includes(1)}
+                  onClick={() => {
+                    handlePick({ key: item?.key, value: 1 })
+                  }}
+                  disable={!edit && !!userShift}
+                  disableClassName="!opacity-80"
+                >
+                  Ca sáng
+                </Button>
+                <Button
+                  color="primary"
+                  className="mr-2 w-[30px] sm:w-auto"
+                  iconName="Clock1"
+                  size="md"
+                  outline={!shitfPick?.[item?.key]?.includes(2)}
+                  onClick={() => {
+                    handlePick({ key: item?.key, value: 2 })
+                  }}
+                  disable={!edit && !!userShift}
+                  disableClassName="!opacity-80"
+                >
+                  Ca chiều
+                </Button>
+                <Button
+                  color="primary"
+                  className="mr-2 w-[30px] sm:w-auto"
+                  iconName="Clock1"
+                  size="md"
+                  outline={!shitfPick?.[item?.key]?.includes(3)}
+                  onClick={() => {
+                    handlePick({ key: item?.key, value: 3 })
+                  }}
+                  disable={!edit && !!userShift}
+                  disableClassName="!opacity-80"
+                >
+                  Ca tối
+                </Button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 flex justify-center">
+            {userShift ? (
+              edit ? (
+                <div className="flex justify-center gap-6">
+                  <Button
+                    color="danger"
+                    className="mr-2 !w-[130px] sm:w-auto"
+                    size="md"
+                    outline
+                    onClick={() => {
+                      setEdit(false)
+                      getData()
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    color="primary"
+                    className="mr-2 w-[30px] sm:w-auto"
+                    size="md"
+                    onClick={() => {
+                      showPopupConfirm({
+                        title:
+                          'Bạn có thật sự muốn thay đổi lịch đăng ký ca làm việc?',
+                        message: 'Việc thay đổi sẽ được áp dụng vào tuần sau.',
+                        classNameIcon: 'text-red-600',
+                        titleConfirm: 'Xóa',
+                        comfirmCallback: async ({ setShow }) => {
+                          handleChangePick()
+                          setEdit(false)
+                          setShow(false)
+                        }
+                      })
+                    }}
+                  >
+                    Lưu thay đổi
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  color="primary"
+                  className="mr-2 w-[30px] sm:w-auto"
+                  size="md"
+                  onClick={() => {
+                    setEdit(true)
+                  }}
+                >
+                  Thay đổi ca làm việc
+                </Button>
+              )
+            ) : (
               <Button
                 color="primary"
                 className="mr-2 w-[30px] sm:w-auto"
                 size="md"
-                onClick={() => {
-                  showPopupConfirm({
-                    title:
-                      'Bạn có thật sự muốn thay đổi lịch đăng ký ca làm việc?',
-                    message: 'Việc thay đổi sẽ được áp dụng vào tuần sau.',
-                    classNameIcon: 'text-red-600',
-                    titleConfirm: 'Xóa',
-                    comfirmCallback: async ({ setShow }) => {
-                      handleChangePick()
-                      setEdit(false)
-                      setShow(false)
-                    }
-                  })
-                }}
+                onClick={handleApplyPick}
               >
-                Lưu thay đổi
+                Đăng ký ca làm việc
               </Button>
-            </div>
-          ) : (
-            <Button
-              color="primary"
-              className="mr-2 w-[30px] sm:w-auto"
-              size="md"
-              onClick={() => {
-                setEdit(true)
-              }}
-            >
-              Thay đổi ca làm việc
-            </Button>
-          )
-        ) : (
-          <Button
-            color="primary"
-            className="mr-2 w-[30px] sm:w-auto"
-            size="md"
-            onClick={handleApplyPick}
-          >
-            Đăng ký ca làm việc
-          </Button>
-        )}
-      </div>
+            )}
+          </div>
 
-      <div className="mt-6">
-        <div className="mb-6">
-          <h2 className="mr-auto text-2xl font-bold">Lịch sử ca làm việc</h2>
-        </div>
-        <div className="grid grid-cols-1 border">
-          <div className="border-b">
-            <div className="grid max-w-[1000px] grid-cols-3 gap-4">
-              <div className="flex items-center border-r p-3 text-lg font-medium">
-                <div className="flex w-full items-center gap-4">
-                  <span>Ngày: </span>
-                  <Select
-                    handleFunc={(e) => {
-                      setDaySelect(e)
-                    }}
-                    value={daySelect}
-                    options={dayFilter}
-                    placeholder={'Ngày'}
-                    className="react-select-container z-[70] max-h-[400px] w-full"
-                  />
+          <div className="mt-6">
+            <div className="mb-6">
+              <h2 className="mr-auto text-2xl font-bold">
+                Lịch sử ca làm việc
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 border">
+              <div className="border-b">
+                <div className="grid max-w-[1000px] grid-cols-3 gap-4">
+                  <div className="flex items-center border-r p-3 text-lg font-medium">
+                    <div className="flex w-full items-center gap-4">
+                      <span>Ngày: </span>
+                      <Select
+                        handleFunc={(e) => {
+                          setDaySelect(e)
+                        }}
+                        value={daySelect}
+                        options={dayFilter}
+                        placeholder={'Ngày'}
+                        className="react-select-container z-[70] max-h-[400px] w-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center border-r p-3 text-lg font-medium">
+                    <div className="flex w-full items-center gap-4">
+                      <span>Tháng: </span>
+                      <Select
+                        handleFunc={(e) => {
+                          setMonthSelect(+e.value)
+                        }}
+                        value={
+                          Month?.find((item) => item.value === monthSelect) ||
+                          Month?.[0]
+                        }
+                        options={Month}
+                        placeholder={'Tuần'}
+                        className="react-select-container z-[70] max-h-[400px] w-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center border-r p-3 text-lg font-medium">
+                    <div className="flex w-full items-center gap-4">
+                      <span>Năm: </span>
+                      <Select
+                        handleFunc={() => {}}
+                        value={{
+                          label: '2023',
+                          value: '2023'
+                        }}
+                        options={[
+                          {
+                            label: '2023',
+                            value: '2023'
+                          }
+                        ]}
+                        placeholder={'Tuần'}
+                        className="react-select-container z-[70] max-h-[400px] w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+                {listHisShift?.[0]?.msg && (
+                  <div className="grid grid-cols-1 gap-2 p-3 text-base font-medium">
+                    <p>{listHisShift?.[0]?.msg}</p>
+                    <p>
+                      Thời gian: {formatDate(listHisShift?.[0]?.updatedAt + '')}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-4 border-b">
+                <div className="grid flex-1 shrink-0 grid-cols-7">
+                  {SHIFT_TIME.map((day) => (
+                    <div
+                      className="border-r py-3 text-center last:border-none"
+                      key={day?.key}
+                    >
+                      <span className="text-lg font-medium">{day?.name}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="flex items-center border-r p-3 text-lg font-medium">
-                <div className="flex w-full items-center gap-4">
-                  <span>Tháng: </span>
-                  <Select
-                    handleFunc={(e) => {
-                      setMonthSelect(+e.value)
-                    }}
-                    value={
-                      Month?.find((item) => item.value === monthSelect) ||
-                      Month?.[0]
-                    }
-                    options={Month}
-                    placeholder={'Tuần'}
-                    className="react-select-container z-[70] max-h-[400px] w-full"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center border-r p-3 text-lg font-medium">
-                <div className="flex w-full items-center gap-4">
-                  <span>Năm: </span>
-                  <Select
-                    handleFunc={() => {}}
-                    value={{
-                      label: '2023',
-                      value: '2023'
-                    }}
-                    options={[
-                      {
-                        label: '2023',
-                        value: '2023'
-                      }
-                    ]}
-                    placeholder={'Tuần'}
-                    className="react-select-container z-[70] max-h-[400px] w-full"
-                  />
-                </div>
+              <div className="grid grid-cols-1">
+                {listHisShift?.length > 0 ? (
+                  listHisShift?.map((item) => (
+                    <HisShiftEmployee key={`ls-em-${item?.id}`} item={item} />
+                  ))
+                ) : (
+                  <p className="p-3 text-center text-lg font-medium">
+                    Không có dữ liệu{' '}
+                  </p>
+                )}
               </div>
             </div>
-            {listHisShift?.[0]?.msg && (
-              <div className="grid grid-cols-1 gap-2 p-3 text-base font-medium">
-                <p>{listHisShift?.[0]?.msg}</p>
-                <p>
-                  Thời gian: {formatDate(listHisShift?.[0]?.updatedAt + '')}
-                </p>
-              </div>
-            )}
-          </div>
-          <div className="flex gap-4 border-b">
-            <div className="grid flex-1 shrink-0 grid-cols-7">
-              {SHIFT_TIME.map((day) => (
-                <div
-                  className="border-r py-3 text-center last:border-none"
-                  key={day?.key}
-                >
-                  <span className="text-lg font-medium">{day?.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-1">
-            {listHisShift?.length > 0 ? (
-              listHisShift?.map((item) => (
-                <HisShiftEmployee key={`ls-em-${item?.id}`} item={item} />
-              ))
-            ) : (
-              <p className="p-3 text-center text-lg font-medium">
-                Không có dữ liệu{' '}
-              </p>
-            )}
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   )
 }
 
