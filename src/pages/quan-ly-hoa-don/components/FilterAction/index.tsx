@@ -13,9 +13,10 @@ const FilterAction = () => {
     <div className="w-56">
       <Select
         handleFunc={(e) => {
+          console.log('e.value', e.value)
           e?.value
-            ? table?.addFilter('stautus', '=', e?.value)
-            : table && removeFilterByFieldName(table, 'stautus')
+            ? table?.addFilter('status', '=', e?.value)
+            : table && removeFilterByFieldName(table, 'status')
         }}
         defaultValue={billStatusOptions.find(
           (opt) => opt.value === query?.stautus

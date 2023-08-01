@@ -207,7 +207,13 @@ const BillDetail = () => {
 
   return (
     <>
-      <Loading show={false} />
+      <Loading
+        show={
+          updateBillMutation?.isLoading ||
+          createBillItemMutation?.isLoading ||
+          deleteBillMutation.isLoading
+        }
+      />
       <div className="mt-5">
         <Button
           color="secondary"

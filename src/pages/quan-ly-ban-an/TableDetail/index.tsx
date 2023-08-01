@@ -224,7 +224,12 @@ const TableDetail = () => {
   return (
     <>
       <Loading
-        show={cancelOrder.isLoading || deleteBillMutation.isLoading || loading}
+        show={
+          cancelOrder.isLoading ||
+          deleteBillMutation.isLoading ||
+          loading ||
+          createBillItemMutation.isLoading
+        }
       />
       {showCancel && (
         <CancelOrder
