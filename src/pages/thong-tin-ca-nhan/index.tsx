@@ -3,6 +3,7 @@ import InputForm from 'components/Input/InputForm'
 import InputImage from 'components/Input/InputImage'
 import type { TOption } from 'components/Input/InputSelect'
 import InputSelect from 'components/Input/InputSelect'
+import Loading from 'components/Loading'
 import { validateRequired } from 'contants/validate'
 import { useAuth } from 'contexts/auth'
 import { type CreateEmployeeDto, positionOptions } from 'models/employee'
@@ -49,291 +50,294 @@ const UserInfo = () => {
   }
 
   return (
-    <EditView<CreateEmployeeDto>
-      saveLabel="Cập nhật"
-      showBackButton={true}
-      defaultMode={'edit'}
-      initialValues={makeDefaultData(data)}
-      schema={yup.object({
-        name: validateRequired(),
-        email: validateRequired()
-      })}
-      title="Thông tin cá nhân"
-      isCreate={true}
-      onSubmit={async ({ data }) => {
-        const cleanData: any = {
-          ...data,
-          active: data.active
-            ? (data.active as any) === '1'
-              ? true
-              : false
-            : undefined,
-          dateOfBirth: data.dateOfBirth
-            ? new Date(data.dateOfBirth).toISOString()
-            : undefined,
-          provinceId: data.provinceId ? +data.provinceId : undefined,
-          districtId: data.districtId ? +data.districtId : undefined,
-          dateContract: data.dateContract
-            ? new Date(data.dateContract).toISOString()
-            : undefined,
-          wawe: data.wawe ? +data.wawe : 0,
-          trialTime: data.trialTime ? +data.trialTime : 0
-          // image: string
-        }
-        await updateEmplyeeMutation.mutateAsync({
-          id: parseInt(user?.Employee?.id + ''),
-          data: cleanData
-        })
-        await getUser()
-      }}
-      changeMode={false}
-      renderView={({
-        form: {
-          register,
-          formState: { errors },
-          watch,
-          control
-        },
-        mode
-      }) => {
-        return (
-          <>
-            <div className="intro-y box col-span-12 lg:col-span-6">
-              <div className="p-5">
-                <h2 className="mt-8 font-medium">TÀI KHOẢN</h2>
-                <InputForm
-                  {...register('name')}
-                  title={'Tên nhân viên'}
-                  type="text"
-                  required
-                  error={errors?.name?.message}
-                  readOnly={mode === 'readonly'}
-                  wrapperClassname="mt-2"
-                />
-                <InputForm
-                  {...register('phone')}
-                  title={'Điện thoại'}
-                  type="text"
-                  required
-                  wrapperClassname="mt-2"
-                  error={errors?.phone?.message}
-                  readOnly={mode === 'readonly'}
-                />
-                <InputForm
-                  {...register('email')}
-                  title={'Email'}
-                  type="email"
-                  required
-                  wrapperClassname="mt-2"
-                  error={errors?.email?.message}
-                  readOnly={mode === 'readonly'}
-                />
+    <>
+      <Loading show={updateEmplyeeMutation.isLoading} />
+      <EditView<CreateEmployeeDto>
+        saveLabel="Cập nhật"
+        showBackButton={true}
+        defaultMode={'edit'}
+        initialValues={makeDefaultData(data)}
+        schema={yup.object({
+          name: validateRequired(),
+          email: validateRequired()
+        })}
+        title="Thông tin cá nhân"
+        isCreate={true}
+        onSubmit={async ({ data }) => {
+          const cleanData: any = {
+            ...data,
+            active: data.active
+              ? (data.active as any) === '1'
+                ? true
+                : false
+              : undefined,
+            dateOfBirth: data.dateOfBirth
+              ? new Date(data.dateOfBirth).toISOString()
+              : undefined,
+            provinceId: data.provinceId ? +data.provinceId : undefined,
+            districtId: data.districtId ? +data.districtId : undefined,
+            dateContract: data.dateContract
+              ? new Date(data.dateContract).toISOString()
+              : undefined,
+            wawe: data.wawe ? +data.wawe : 0,
+            trialTime: data.trialTime ? +data.trialTime : 0
+            // image: string
+          }
+          await updateEmplyeeMutation.mutateAsync({
+            id: parseInt(user?.Employee?.id + ''),
+            data: cleanData
+          })
+          await getUser()
+        }}
+        changeMode={false}
+        renderView={({
+          form: {
+            register,
+            formState: { errors },
+            watch,
+            control
+          },
+          mode
+        }) => {
+          return (
+            <>
+              <div className="intro-y box col-span-12 lg:col-span-6">
+                <div className="p-5">
+                  <h2 className="mt-8 font-medium">TÀI KHOẢN</h2>
+                  <InputForm
+                    {...register('name')}
+                    title={'Tên nhân viên'}
+                    type="text"
+                    required
+                    error={errors?.name?.message}
+                    readOnly={mode === 'readonly'}
+                    wrapperClassname="mt-2"
+                  />
+                  <InputForm
+                    {...register('phone')}
+                    title={'Điện thoại'}
+                    type="text"
+                    required
+                    wrapperClassname="mt-2"
+                    error={errors?.phone?.message}
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputForm
+                    {...register('email')}
+                    title={'Email'}
+                    type="email"
+                    required
+                    wrapperClassname="mt-2"
+                    error={errors?.email?.message}
+                    readOnly
+                  />
 
-                <h2 className="mt-8 font-medium">THÔNG TIN CÁ NHÂN</h2>
-                <InputForm
-                  {...register('dateOfBirth')}
-                  title={'Ngày sinh'}
-                  type="date"
-                  error={errors?.dateOfBirth?.message}
-                  wrapperClassname="mt-2"
-                  readOnly={mode === 'readonly'}
-                />
-                <InputForm
-                  {...register('placeOfBirth')}
-                  title={'Nơi sinh'}
-                  type="text"
-                  wrapperClassname="mt-2"
-                  error={errors?.placeOfBirth?.message}
-                  readOnly={mode === 'readonly'}
-                />
-                <InputForm
-                  {...register('nation')}
-                  title={'Dân tộc'}
-                  type="text"
-                  wrapperClassname="mt-2"
-                  error={errors?.nation?.message}
-                  readOnly={mode === 'readonly'}
-                />
-                <InputForm
-                  {...register('from')}
-                  title={'Quê quán'}
-                  type="text"
-                  wrapperClassname="mt-2"
-                  error={errors?.from?.message}
-                  readOnly={mode === 'readonly'}
-                />
-                <InputForm
-                  {...register('idNumber')}
-                  title={'Số CCCD / Hộ chiếu'}
-                  type="text"
-                  wrapperClassname="mt-2"
-                  error={errors?.idNumber?.message}
-                  readOnly={mode === 'readonly'}
-                />
-                <InputSelect
-                  name={`learn`}
-                  loadOptions={async (): Promise<TOption[]> => {
-                    return [
-                      {
-                        label: 'Không',
-                        value: '0'
-                      },
-                      {
-                        label: 'Hoàn thành tiểu học',
-                        value: '1'
-                      },
-                      {
-                        label: 'Hoàn thành Trung học',
-                        value: '2'
-                      },
-                      {
-                        label: '12/12',
-                        value: '3'
-                      },
-                      {
-                        label: 'Cử nhân',
-                        value: '4'
-                      },
-                      {
-                        label: 'Thạc sỹ',
-                        value: '5'
-                      },
-                      {
-                        label: 'Khác',
-                        value: '6'
-                      }
-                    ]
-                  }}
-                  title={'Trình độ học vấn'}
-                  placeholder={'Trình độ học vấn'}
-                  error={errors?.learn?.message}
-                  wrapperClassname="mt-2"
-                  isMulti={false}
-                />
-                <InputForm
-                  {...register('address')}
-                  title={'Địa chỉ thường trú'}
-                  type="text"
-                  wrapperClassname="mt-2"
-                  error={errors?.address?.message}
-                  readOnly={mode === 'readonly'}
-                />
-                <InputSelect
-                  name={`provinceId`}
-                  loadOptions={async (): Promise<TOption[]> => {
-                    const res = await provinceAPI.getByType('TINH')
-                    return res?.data?.data.map((p: IProvince) => ({
-                      label: p.name,
-                      value: p.id
-                    }))
-                  }}
-                  title={'Tỉnh'}
-                  placeholder={'Tỉnh'}
-                  error={errors?.provinceId?.message}
-                  wrapperClassname="mt-2"
-                  isMulti={false}
-                />
-                <InputSelect
-                  key={`select-district-${watch('provinceId')}`}
-                  name="districtId"
-                  error={errors?.districtId?.message}
-                  loadOptions={async (): Promise<TOption[]> => {
-                    const data = await provinceAPI.getAll()
-                    return data?.data?.data
-                      ?.filter(
-                        (item: IProvince) =>
-                          item?.parentId ===
-                          parseInt(watch('provinceId') || '-1')
-                      )
-                      ?.map((p: IProvince) => ({
+                  <h2 className="mt-8 font-medium">THÔNG TIN CÁ NHÂN</h2>
+                  <InputForm
+                    {...register('dateOfBirth')}
+                    title={'Ngày sinh'}
+                    type="date"
+                    error={errors?.dateOfBirth?.message}
+                    wrapperClassname="mt-2"
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputForm
+                    {...register('placeOfBirth')}
+                    title={'Nơi sinh'}
+                    type="text"
+                    wrapperClassname="mt-2"
+                    error={errors?.placeOfBirth?.message}
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputForm
+                    {...register('nation')}
+                    title={'Dân tộc'}
+                    type="text"
+                    wrapperClassname="mt-2"
+                    error={errors?.nation?.message}
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputForm
+                    {...register('from')}
+                    title={'Quê quán'}
+                    type="text"
+                    wrapperClassname="mt-2"
+                    error={errors?.from?.message}
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputForm
+                    {...register('idNumber')}
+                    title={'Số CCCD / Hộ chiếu'}
+                    type="text"
+                    wrapperClassname="mt-2"
+                    error={errors?.idNumber?.message}
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputSelect
+                    name={`learn`}
+                    loadOptions={async (): Promise<TOption[]> => {
+                      return [
+                        {
+                          label: 'Không',
+                          value: '0'
+                        },
+                        {
+                          label: 'Hoàn thành tiểu học',
+                          value: '1'
+                        },
+                        {
+                          label: 'Hoàn thành Trung học',
+                          value: '2'
+                        },
+                        {
+                          label: '12/12',
+                          value: '3'
+                        },
+                        {
+                          label: 'Cử nhân',
+                          value: '4'
+                        },
+                        {
+                          label: 'Thạc sỹ',
+                          value: '5'
+                        },
+                        {
+                          label: 'Khác',
+                          value: '6'
+                        }
+                      ]
+                    }}
+                    title={'Trình độ học vấn'}
+                    placeholder={'Trình độ học vấn'}
+                    error={errors?.learn?.message}
+                    wrapperClassname="mt-2"
+                    isMulti={false}
+                  />
+                  <InputForm
+                    {...register('address')}
+                    title={'Địa chỉ thường trú'}
+                    type="text"
+                    wrapperClassname="mt-2"
+                    error={errors?.address?.message}
+                    readOnly={mode === 'readonly'}
+                  />
+                  <InputSelect
+                    name={`provinceId`}
+                    loadOptions={async (): Promise<TOption[]> => {
+                      const res = await provinceAPI.getByType('TINH')
+                      return res?.data?.data.map((p: IProvince) => ({
                         label: p.name,
                         value: p.id
                       }))
-                  }}
-                  title={'Quận/Huyện'}
-                  placeholder={'Quận/Huyện'}
-                  wrapperClassname="mt-2"
-                  isMulti={false}
-                  isDisabled={!watch('provinceId')}
-                />
+                    }}
+                    title={'Tỉnh'}
+                    placeholder={'Tỉnh'}
+                    error={errors?.provinceId?.message}
+                    wrapperClassname="mt-2"
+                    isMulti={false}
+                  />
+                  <InputSelect
+                    key={`select-district-${watch('provinceId')}`}
+                    name="districtId"
+                    error={errors?.districtId?.message}
+                    loadOptions={async (): Promise<TOption[]> => {
+                      const data = await provinceAPI.getAll()
+                      return data?.data?.data
+                        ?.filter(
+                          (item: IProvince) =>
+                            item?.parentId ===
+                            parseInt(watch('provinceId') || '-1')
+                        )
+                        ?.map((p: IProvince) => ({
+                          label: p.name,
+                          value: p.id
+                        }))
+                    }}
+                    title={'Quận/Huyện'}
+                    placeholder={'Quận/Huyện'}
+                    wrapperClassname="mt-2"
+                    isMulti={false}
+                    isDisabled={!watch('provinceId')}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="intro-y box col-span-12 lg:col-span-6">
-              <div className="p-5">
-                <label>Ảnh đại diện</label>
-                <Controller
-                  name={'image'}
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <InputImage onChange={onChange} defaultImage={value} />
-                  )}
-                />
-                <InputSelect
-                  name={`position`}
-                  loadOptions={async (): Promise<TOption[]> => {
-                    return positionOptions
-                  }}
-                  title={'Vị trí'}
-                  placeholder={'Vị trí'}
-                  error={errors?.position?.message}
-                  wrapperClassname="mt-2"
-                  isMulti={false}
-                  isDisabled
-                />
-                <h2 className="mt-8 font-medium">THÔNG TIN HỢP ĐỒNG</h2>
-                <InputSelect
-                  name={`type`}
-                  loadOptions={async (): Promise<TOption[]> => {
-                    return [
-                      {
-                        label: 'Chính thức',
-                        value: 'chinh_thuc'
-                      },
-                      {
-                        label: 'Thử việc',
-                        value: 'thu_viec'
-                      }
-                    ]
-                  }}
-                  title={'Loại hợp đồng'}
-                  placeholder={'Loại hợp đồng'}
-                  error={errors?.position?.message}
-                  wrapperClassname="mt-2"
-                  isMulti={false}
-                  isDisabled
-                />
-                <InputForm
-                  {...register('dateContract')}
-                  title={'Ngày bắt đầu hợp đồng'}
-                  type="date"
-                  error={errors?.dateContract?.message}
-                  wrapperClassname="mt-2"
-                  readOnly
-                />
-                <InputForm
-                  {...register('trialTime')}
-                  help="Đơn vị số ngày"
-                  title={'Thời gian thử việc'}
-                  type="text"
-                  error={errors?.trialTime?.message}
-                  wrapperClassname="mt-2"
-                  readOnly
-                />{' '}
-                <InputForm
-                  {...register('wawe')}
-                  help="Đơn vị VNĐ / tháng"
-                  title={'Mức lương cơ bản'}
-                  type="text"
-                  error={errors?.wawe?.message}
-                  wrapperClassname="mt-2"
-                  readOnly
-                />
+              <div className="intro-y box col-span-12 lg:col-span-6">
+                <div className="p-5">
+                  <label>Ảnh đại diện</label>
+                  <Controller
+                    name={'image'}
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <InputImage onChange={onChange} defaultImage={value} />
+                    )}
+                  />
+                  <InputSelect
+                    name={`position`}
+                    loadOptions={async (): Promise<TOption[]> => {
+                      return positionOptions
+                    }}
+                    title={'Vị trí'}
+                    placeholder={'Vị trí'}
+                    error={errors?.position?.message}
+                    wrapperClassname="mt-2"
+                    isMulti={false}
+                    isDisabled
+                  />
+                  <h2 className="mt-8 font-medium">THÔNG TIN HỢP ĐỒNG</h2>
+                  <InputSelect
+                    name={`type`}
+                    loadOptions={async (): Promise<TOption[]> => {
+                      return [
+                        {
+                          label: 'Chính thức',
+                          value: 'chinh_thuc'
+                        },
+                        {
+                          label: 'Thử việc',
+                          value: 'thu_viec'
+                        }
+                      ]
+                    }}
+                    title={'Loại hợp đồng'}
+                    placeholder={'Loại hợp đồng'}
+                    error={errors?.position?.message}
+                    wrapperClassname="mt-2"
+                    isMulti={false}
+                    isDisabled
+                  />
+                  <InputForm
+                    {...register('dateContract')}
+                    title={'Ngày bắt đầu hợp đồng'}
+                    type="date"
+                    error={errors?.dateContract?.message}
+                    wrapperClassname="mt-2"
+                    readOnly
+                  />
+                  <InputForm
+                    {...register('trialTime')}
+                    help="Đơn vị số ngày"
+                    title={'Thời gian thử việc'}
+                    type="text"
+                    error={errors?.trialTime?.message}
+                    wrapperClassname="mt-2"
+                    readOnly
+                  />{' '}
+                  <InputForm
+                    {...register('wawe')}
+                    help="Đơn vị VNĐ / tháng"
+                    title={'Mức lương cơ bản'}
+                    type="text"
+                    error={errors?.wawe?.message}
+                    wrapperClassname="mt-2"
+                    readOnly
+                  />
+                </div>
               </div>
-            </div>
-          </>
-        )
-      }}
-    />
+            </>
+          )
+        }}
+      />
+    </>
   )
 }
 

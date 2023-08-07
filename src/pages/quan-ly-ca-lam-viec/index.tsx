@@ -137,7 +137,7 @@ const ManagermentShift = () => {
     if (listHisShift?.length <= 0) return false
     const check = listHisShift?.find((item) => item.exits)
     if (check) return true
-    return true
+    return false
   }, [listHisShift])
 
   return (

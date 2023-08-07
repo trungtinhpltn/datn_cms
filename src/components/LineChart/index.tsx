@@ -58,7 +58,7 @@ const LineChart = (lineChartData: ILineChartTicketProps) => {
     labels: lineChartData.labels,
     datasets: lineChartData.datasets
   }
-  return <Line className="rounded-3xl" options={options} data={data} />
+  return <Line className="rounded-xl" options={options} data={data} />
 }
 
 export default LineChart

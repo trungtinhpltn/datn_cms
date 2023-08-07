@@ -39,6 +39,12 @@ export async function updateBillItem(data: IBillItem): Promise<any> {
   return response.data
 }
 
+export async function getBillItemReport(data: any): Promise<any> {
+  const query = qs.stringify(data)
+  const response = await axiosClient.get(`/bill-item/getReport?${query}`, data)
+  return response.data
+}
+
 export async function deleteBillItem(id: number): Promise<any> {
   const response = await axiosClient.delete(`/bill-item/${id}`)
   return response.data
