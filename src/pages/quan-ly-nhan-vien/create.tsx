@@ -3,7 +3,7 @@ import InputForm from 'components/Input/InputForm'
 import InputImage from 'components/Input/InputImage'
 import type { TOption } from 'components/Input/InputSelect'
 import InputSelect from 'components/Input/InputSelect'
-import { validateRequired } from 'contants/validate'
+import { validatePhone, validateRequired } from 'contants/validate'
 import { useGlobalContext } from 'contexts/global'
 import type { CreateEmployeeDto } from 'models/employee'
 import type { IProvince } from 'models/province'
@@ -24,8 +24,10 @@ const MangermentStaffCreate = () => {
       initialValues={{}}
       schema={yup.object({
         name: validateRequired(),
-        email: validateRequired(),
-        password: validateRequired()
+        email: validateRequired('email'),
+        password: validateRequired(),
+        position: validateRequired('Vị trí'),
+        phone: validatePhone()
       })}
       title="Thêm nhân viên"
       isCreate={true}
@@ -301,6 +303,7 @@ const MangermentStaffCreate = () => {
                   error={errors?.position?.message}
                   wrapperClassname="mt-2"
                   isMulti={false}
+                  required
                 />
                 <h2 className="mt-8 font-medium">THÔNG TIN HỢP ĐỒNG</h2>
                 <InputSelect
@@ -319,7 +322,7 @@ const MangermentStaffCreate = () => {
                   }}
                   title={'Loại hợp đồng'}
                   placeholder={'Loại hợp đồng'}
-                  error={errors?.position?.message}
+                  error={errors?.type?.message}
                   wrapperClassname="mt-2"
                   isMulti={false}
                 />

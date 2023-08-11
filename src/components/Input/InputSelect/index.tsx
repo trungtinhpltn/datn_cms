@@ -64,7 +64,7 @@ export default function InputSelect<T extends FieldValues>(
     >
       <div className={classNames(subClassname)}>
         <div className="form-label flex w-full flex-col sm:flex-row">
-          {title} {required && <span className="text-red-500">*</span>}
+          {title} {required && <span className="ml-1 text-red-500">*</span>}
           {help && (
             <span className="mt-1 text-xs text-slate-500 sm:ml-auto sm:mt-0">
               {help}

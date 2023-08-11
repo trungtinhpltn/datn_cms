@@ -135,10 +135,15 @@ const ManagermentShift = () => {
 
   const showHisShift = useMemo(() => {
     if (listHisShift?.length <= 0) return false
+    const dateS = daySelect.value.split('-')
+    const start = new Date(dateS?.[0]).getTime()
+    const end = new Date(dateS?.[1]).getTime()
+    const current = new Date(new Date().toDateString()).getTime()
+    if (current >= start && current <= end) return true
     const check = listHisShift?.find((item) => item.exits)
     if (check) return true
     return false
-  }, [listHisShift])
+  }, [listHisShift, daySelect])
 
   return (
     <>
